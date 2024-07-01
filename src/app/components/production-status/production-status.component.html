@@ -1,0 +1,122 @@
+<mat-card class="card-container">
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>Produksjonsstatus</mat-card-title>
+      <mat-card-subtitle>
+        Søk på strekkode for å se status
+      </mat-card-subtitle>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field class="search-form-field" (keydown.control.enter)="search()">
+      <mat-label>Søk på URN</mat-label>
+      <textarea
+        matInput
+        type="text"
+        [(ngModel)]="searchInputValue"
+        cdkTextareaAutosize
+      ></textarea>
+      @if (searchInputValue) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="searchInputValue=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <button mat-flat-button color="primary" (click)="search()">Søk</button>
+    <button mat-icon-button color="secondary" (click)="clear()">
+      <mat-icon>clear</mat-icon>
+    </button>
+    @if (displayResults) {
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> Objekt-ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> Materialtype </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef> Navn </th>
+          <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell class="centered-cell" *matHeaderCellDef> Kan sendes videre? </th>
+          <td mat-cell class="centered-cell" *matCellDef="let element" [matTooltip]="element.status">
+            @if (itemIsFinished(element.status, element.type)) {
+              <mat-icon color="primary">thumb_up</mat-icon>
+            } @else {
+              <mat-icon color="warn">thumb_down</mat-icon>
+            }
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+            class="table-row-expandable"
+          (click)="setSelectedObject(element)"
+        ></tr>
+      </table>
+    }
+  </mat-card-content>
+</mat-card>
+
+@if (selectedObject) {
+  <mat-card class="card-container">
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>{{selectedObject.description}}</mat-card-title>
+        <mat-card-subtitle>
+          ID: {{selectedObject.id}}
+        </mat-card-subtitle>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="eventsDataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let element" [matTooltip]="element.status">
+            @if (element.status?.toLowerCase() === 'done') {
+              <mat-icon color="primary">done</mat-icon>
+            } @else if (element.status?.toLowerCase() === 'failed') {
+              <mat-icon color="warn">clear</mat-icon>
+            } @else {
+              <mat-icon>hourglass_empty</mat-icon>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="statusText">
+          <th mat-header-cell *matHeaderCellDef> Melding </th>
+          <td mat-cell *matCellDef="let element">
+            @if (element.status === 'failed') {
+              {{element.statusText}}
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="started">
+          <th mat-header-cell *matHeaderCellDef> Startet </th>
+          <td mat-cell *matCellDef="let element"> {{element.started | date:'YYYY-MM-dd HH:mm'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="startedBy">
+          <th mat-header-cell *matHeaderCellDef> Startet av </th>
+          <td mat-cell *matCellDef="let element"> {{element.startedBy}} </td>
+        </ng-container>
+        <ng-container matColumnDef="completed">
+          <th mat-header-cell *matHeaderCellDef> Fullført </th>
+          <td mat-cell *matCellDef="let element"> {{element.completed | date:'YYYY-MM-dd HH:mm'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="completedBy">
+          <th mat-header-cell *matHeaderCellDef> Fullført av </th>
+          <td mat-cell *matCellDef="let element"> {{element.completedBy}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="eventColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: eventColumns;"
+        ></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+}
+

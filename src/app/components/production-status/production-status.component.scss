@@ -1,0 +1,19 @@
+.card-container {
+  width: 80vw;
+  margin: 1em auto;
+}
+
+.search-form-field {
+  width: 50%;
+}
+
+.table-row-expandable {
+  cursor: pointer;
+  &:hover {
+    background-color: rgb(223, 223, 223);
+  }
+}
+
+.centered-cell {
+  text-align: center;
+}
