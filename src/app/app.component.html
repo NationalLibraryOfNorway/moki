@@ -4,6 +4,10 @@
     min-height: 100%;
   }
 
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
   .content {
     display: flex;
     justify-content: center;
@@ -17,6 +21,10 @@
       <mat-icon>home</mat-icon>
     </button>
     <span>Moki</span>
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button matTooltip="Hjelp" (click)="openDialog()">
+      <mat-icon color="primary">help</mat-icon>
+    </button>
   </mat-toolbar>
   <div class="content">
     <router-outlet />

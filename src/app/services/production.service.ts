@@ -17,7 +17,7 @@ export class ProductionService {
   ) { }
 
   searchByUrn(searchQuery: string): Observable<DigitizedItem> {
-    return this.http.get<DigitizedItem>(`/papi/item/${searchQuery}`).pipe(
+    return this.http.get<DigitizedItem>(`/papi/proddb/${searchQuery}`).pipe(
       map(item => new DigitizedItemBuilder(item).build()),
       mergeMap(item => {
           if (item.id) {
@@ -43,7 +43,7 @@ export class ProductionService {
   }
 
   private getEventsById(id: string): Observable<ItemEvent[]> {
-    return this.http.get<ItemEvent[]>(`/papi/item/${id}/events`).pipe(
+    return this.http.get<ItemEvent[]>(`/papi/proddb/${id}/events`).pipe(
       map(items => items.map(item => new ItemEventBuilder(item).build())),
       // TODO: Change sort to follow actual step order
       map(items => items.sort((a, b) => {
@@ -54,7 +54,7 @@ export class ProductionService {
   }
 
   private getRelatedItems(id: number): Observable<DigitizedItem[]> {
-    return this.http.get<DigitizedItem[]>(`/papi/item/${id}/children`).pipe(
+    return this.http.get<DigitizedItem[]>(`/papi/proddb/${id}/children`).pipe(
       map(items => items.map(item => new DigitizedItemBuilder(item).build()))
     );
   }

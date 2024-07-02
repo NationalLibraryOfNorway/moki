@@ -8,7 +8,7 @@ import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {DigitizedItem} from "../../models/digitized-item.model";
 import {ProductionService} from "../../services/production.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {forkJoin, map, mergeMap, tap} from "rxjs";
+import {forkJoin, tap} from "rxjs";
 import {AsyncPipe, DatePipe} from "@angular/common";
 import {ItemEvent} from "../../models/item-event.model";
 import {MaterialTypeEnum} from "../../enums/material-type.enum";
@@ -139,5 +139,9 @@ export class ProductionStatusComponent {
       type === MaterialTypeEnum.Periodical;
   }
 
-  protected readonly MaterialTypeEnum = MaterialTypeEnum;
+  isDigitizedPeriodical(item: DigitizedItem): boolean {
+    return (item.type === MaterialTypeEnum.PeriodicalBundle || item.type === MaterialTypeEnum.Periodical) &&
+      (item.plineId === 26 || item.plineId === 27 || item.plineId === 28 || item.plineId === 37);
+  }
+
 }
