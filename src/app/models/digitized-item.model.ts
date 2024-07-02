@@ -15,4 +15,5 @@ export class DigitizedItem {
   plineId?: number;
   language?: string;
   events?: ItemEvent[];
+  childItems?: DigitizedItem[];
 }

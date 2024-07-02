@@ -9,8 +9,9 @@ import {DigitizedItem} from "../../models/digitized-item.model";
 import {ProductionService} from "../../services/production.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {forkJoin, map, mergeMap, tap} from "rxjs";
-import {DatePipe} from "@angular/common";
+import {AsyncPipe, DatePipe} from "@angular/common";
 import {ItemEvent} from "../../models/item-event.model";
+import {MaterialTypeEnum} from "../../enums/material-type.enum";
 
 @Component({
   selector: 'app-production-status',
@@ -23,7 +24,8 @@ import {ItemEvent} from "../../models/item-event.model";
     MatTableModule,
     MatTooltipModule,
     FormsModule,
-    DatePipe
+    DatePipe,
+    AsyncPipe
   ],
   templateUrl: './production-status.component.html',
   styleUrl: './production-status.component.scss'
@@ -50,7 +52,8 @@ export class ProductionStatusComponent {
     'id',
     'description',
     'type',
-    'status'
+    'status',
+    'relationLink'
   ];
 
   constructor(
@@ -83,20 +86,10 @@ export class ProductionStatusComponent {
 
     const descriptions = this.searchInputValue.split('\n').map(s => s.trim());
     const uniqueDescriptions = Array.from(new Set(descriptions));
-    forkJoin(uniqueDescriptions.filter(Boolean).map(description => {
+    forkJoin(this.normalizeNames(uniqueDescriptions).filter(Boolean).map(description => {
       return this.productionService
         .searchByUrn(description)
-        .pipe(
-          mergeMap(item => {
-            return this.productionService.getEventsById(item.id?.toString()!!).pipe(
-              map(events => {
-                item.events = events;
-                return item;
-              })
-            )
-          }),
-          tap(item => this.dataSource.data.push(item))
-        )
+        .pipe(tap(item => this.dataSource.data.push(item)))
     }))
       .subscribe({
         next: () => {
@@ -109,17 +102,42 @@ export class ProductionStatusComponent {
       })
   }
 
-  itemIsFinished(status: string, type: string): boolean {
-    if (type.toLowerCase() === 'bok') {
-      return status === 'moveToPreservation.done' || status === 'AddToSearchIndex.done';
-    }
-
-    if (type.toLowerCase().endsWith('periodika')) {
-      // TODO: Placeholder, will need to check if each child item has moveToPreservation.done or AddToSearchIndex.done
-      //  AND that the parent item has an equivalent status
-      return false;
-    }
-
-    return status === 'moveToPreservation.done' || status === 'AddToSearchIndex.done';
+  // Helper method to allow searching for digibok without the digibok_ prefix
+  normalizeNames(descriptions: string[]): string[] {
+    const regex = /^(19|20)\d\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])\d{5}$/;
+    return descriptions.map(description => {
+      if (regex.test(description)) {
+        return 'digibok_' + description;
+      }
+      return description;
+    });
   }
+
+  itemIsFinished(item: DigitizedItem): boolean {
+    switch (item.type) {
+      case MaterialTypeEnum.Book:
+        return item.status === 'moveToPreservation.done' || item.status === 'AddToSearchIndex.done';
+      case MaterialTypeEnum.Periodical:
+        return item.status === 'moveToPreservation.done' || item.status === 'AddToSearchIndex.done';
+      case MaterialTypeEnum.PeriodicalBundle:
+        // If parent does not have split periodika as final status, return false
+        if (item.status !== 'SplitPeriodika.done') {
+          return false;
+        }
+        // If any child item does not have moveToPreservation.done or AddToSearchIndex.done, return false
+        return item.childItems?.every(childItem => {
+          return childItem.status === 'moveToPreservation.done' || childItem.status === 'AddToSearchIndex.done';
+        }) ?? false;
+      default:
+        return false;
+    }
+  }
+
+  isSupportedMaterialType(type: MaterialTypeEnum): boolean {
+    return type === MaterialTypeEnum.Book ||
+      type === MaterialTypeEnum.PeriodicalBundle ||
+      type === MaterialTypeEnum.Periodical;
+  }
+
+  protected readonly MaterialTypeEnum = MaterialTypeEnum;
 }
