@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moki-deployment
+  labels:
+    app: moki
+  namespace: tekst-stage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moki
+  template:
+    metadata:
+      labels:
+        app: moki
+    spec:
+      containers:
+        - name: moki
+          image: harbor.nb.no/tekst/moki:<version>
+          ports:
+            - name: app-port
+              containerPort: 4200
+          imagePullPolicy: Always
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: moki-ingress
+  namespace: tekst-stage
+spec:
+  rules:
+    - host: <host_url>
+      http:
+        paths:
+          - path: /moki
+            pathType: Prefix
+            backend:
+              service:
+                name: moki-service
+                port:
+                  number: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: moki-service
+spec:
+  ports:
+    - port: 80
+      name: http
+      targetPort: 4200
+  selector:
+    app: moki
+  type: ClusterIP
