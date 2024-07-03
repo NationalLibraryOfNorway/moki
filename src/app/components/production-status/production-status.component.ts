@@ -13,6 +13,8 @@ import {AsyncPipe, DatePipe} from "@angular/common";
 import {ItemEvent} from "../../models/item-event.model";
 import {MaterialTypeEnum} from "../../enums/material-type.enum";
 import {environment} from "../../../environments/environment";
+import {ProductionDetailsComponent} from "../production-details/production-details.component";
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-production-status',
@@ -26,10 +28,18 @@ import {environment} from "../../../environments/environment";
     MatTooltipModule,
     FormsModule,
     DatePipe,
-    AsyncPipe
+    AsyncPipe,
+    ProductionDetailsComponent
   ],
   templateUrl: './production-status.component.html',
-  styleUrl: './production-status.component.scss'
+  styleUrl: './production-status.component.scss',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ProductionStatusComponent {
 
@@ -41,15 +51,7 @@ export class ProductionStatusComponent {
   notFoundIds: string[] = [];
 
   readonly relationUrl = `${environment.relationUrl}/periodicals/issue`;
-  readonly eventColumns: string[] = [
-    'type',
-    'status',
-    'statusText',
-    'started',
-    'startedBy',
-    'completed',
-    'completedBy'
-  ];
+
   readonly displayedColumns: string[] = [
     'id',
     'description',

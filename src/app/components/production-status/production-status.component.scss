@@ -7,13 +7,6 @@
   width: 50%;
 }
 
-.table-row-expandable {
-  cursor: pointer;
-  &:hover {
-    background-color: rgb(223, 223, 223);
-  }
-}
-
 .search-buttons {
   margin-left: 1em;
 }
@@ -28,4 +21,30 @@
 
 .centered-cell {
   text-align: center;
+}
+
+tr.detail-row {
+  height: 0;
+}
+
+.table-row-expandable:hover {
+  cursor: pointer;
+  background: whitesmoke
+}
+
+.table-row-expandable td {
+  border-bottom-width: 0;
+}
+
+.expanded-row-container {
+  background-color: whitesmoke;
+}
+
+.expanded-row-content {
+  overflow: hidden;
+  display: flex;
+}
+
+.selected-row {
+  background-color: whitesmoke;
 }
