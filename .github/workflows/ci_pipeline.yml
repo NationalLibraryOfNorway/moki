@@ -30,6 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set environment file
+        run: |
+          echo ${{secrets.ENVIRONMENT_FILE}} | base64 -d > src/environments/environment.ts
+
       - name: Build application
         run: npm run build
 
