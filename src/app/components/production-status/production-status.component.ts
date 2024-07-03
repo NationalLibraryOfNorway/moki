@@ -12,6 +12,7 @@ import {forkJoin, tap} from "rxjs";
 import {AsyncPipe, DatePipe} from "@angular/common";
 import {ItemEvent} from "../../models/item-event.model";
 import {MaterialTypeEnum} from "../../enums/material-type.enum";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-production-status',
@@ -39,6 +40,7 @@ export class ProductionStatusComponent {
   selectedObject: DigitizedItem | undefined;
   notFoundIds: string[] = [];
 
+  readonly relationUrl = `${environment.relationUrl}/periodicals/issue`;
   readonly eventColumns: string[] = [
     'type',
     'status',
@@ -48,7 +50,6 @@ export class ProductionStatusComponent {
     'completed',
     'completedBy'
   ];
-
   readonly displayedColumns: string[] = [
     'id',
     'description',
@@ -57,10 +58,7 @@ export class ProductionStatusComponent {
     'relationLink'
   ];
 
-  constructor(
-    private productionService: ProductionService
-  ) {
-  }
+  constructor(private productionService: ProductionService) {}
 
   setSelectedObject(item: DigitizedItem | undefined) {
     if (this.selectedObject === item) {
@@ -84,6 +82,7 @@ export class ProductionStatusComponent {
   search() {
     this.displayResults = false;
     this.dataSource.data = [];
+    this.notFoundIds = [];
     this.selectedObject = undefined;
 
     const descriptions = this.searchInputValue.split('\n').map(s => s.trim());
@@ -138,15 +137,20 @@ export class ProductionStatusComponent {
     }
   }
 
-  isSupportedMaterialType(type: MaterialTypeEnum): boolean {
-    return type === MaterialTypeEnum.Book ||
-      type === MaterialTypeEnum.PeriodicalBundle ||
-      type === MaterialTypeEnum.Periodical;
+  isSupportedMaterialType(productionLineId: number): boolean {
+    return this.isDigitizedPeriodical(productionLineId) ||
+      productionLineId === 16 ||  // Bøker - Ordinær bokløype
+      productionLineId === 24 ||  // Bøker - Komplett fra POS
+      productionLineId === 30 ||  // Bøker - Ordinær bokløype v2
+      productionLineId === 32 ||  // Bøker - Komplett fra POS v2
+      productionLineId === 39;    // Bøker - DFB Cover
   }
 
-  isDigitizedPeriodical(item: DigitizedItem): boolean {
-    return (item.type === MaterialTypeEnum.PeriodicalBundle || item.type === MaterialTypeEnum.Periodical) &&
-      (item.plineId === 26 || item.plineId === 27 || item.plineId === 28 || item.plineId === 37);
+  isDigitizedPeriodical(productionLineId: number): boolean {
+    return productionLineId === 26 || // Demonteringsskanning v2 (Flere hefter)
+      productionLineId === 27 ||      // POS og V-form skanning v2 (1) (Return m/omslag)
+      productionLineId === 28 ||      // POS og demonteringsskanning v2 (Kassering m/omslag)
+      productionLineId === 37;        // Tidsskrift - Komplett (Enkelthefte)
   }
 
 }

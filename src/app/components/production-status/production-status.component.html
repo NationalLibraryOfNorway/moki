@@ -22,10 +22,13 @@
         </button>
       }
     </mat-form-field>
-    <button mat-flat-button color="primary" (click)="search()">Søk</button>
-    <button mat-icon-button color="secondary" (click)="clear()">
-      <mat-icon>clear</mat-icon>
-    </button>
+    <button mat-flat-button color="primary" class="search-buttons" (click)="search()">Søk</button>
+    @if (displayResults) {
+      <button mat-button class="search-buttons" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+        Tøm liste
+      </button>
+    }
     @if (notFoundIds.length > 0) {
       <div class="not-found">
         <p>Fant ingen objekter på følgende IDer:</p>
@@ -53,10 +56,9 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell class="centered-cell" *matHeaderCellDef> Kan sendes videre? </th>
           <td mat-cell class="centered-cell" *matCellDef="let element" [matTooltip]="element.status">
-            @if (!isSupportedMaterialType(element.type)) {
+            @if (!isSupportedMaterialType(element.plineId)) {
               <mat-icon>image_not_supported</mat-icon>
-            }
-            @else if (itemIsFinished(element)) {
+            } @else if (itemIsFinished(element)) {
               <mat-icon color="primary">thumb_up</mat-icon>
             } @else {
               <mat-icon color="warn">thumb_down</mat-icon>
@@ -66,10 +68,10 @@
         <ng-container matColumnDef="relationLink">
           <th mat-header-cell class="centered-cell" *matHeaderCellDef> Se i Relation </th>
           <td mat-cell class="centered-cell" *matCellDef="let element">
-            @if (isDigitizedPeriodical(element)) {
+            @if (isDigitizedPeriodical(element.plineId)) {
               <a
                 mat-icon-button
-                href="https://produksjon.nb.no/relation/periodicals/issue/{{element.id}}"
+                href="{{relationUrl}}/{{element.id}}"
                 target="_blank"
                 matTooltip="Åpne i Relation"
               >
