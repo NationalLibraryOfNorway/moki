@@ -26,6 +26,16 @@
     <button mat-icon-button color="secondary" (click)="clear()">
       <mat-icon>clear</mat-icon>
     </button>
+    @if (notFoundIds.length > 0) {
+      <div class="not-found">
+        <p>Fant ingen objekter på følgende IDer:</p>
+        <ul>
+          @for (id of notFoundIds; track id) {
+            <li>{{id}}</li>
+          }
+        </ul>
+      </div>
+    }
     @if (displayResults) {
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">

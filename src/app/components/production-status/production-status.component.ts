@@ -37,6 +37,7 @@ export class ProductionStatusComponent {
   dataSource: MatTableDataSource<DigitizedItem> = new MatTableDataSource<DigitizedItem>([]);
   eventsDataSource: MatTableDataSource<ItemEvent> = new MatTableDataSource<ItemEvent>([]);
   selectedObject: DigitizedItem | undefined;
+  notFoundIds: string[] = [];
 
   readonly eventColumns: string[] = [
     'type',
@@ -75,6 +76,7 @@ export class ProductionStatusComponent {
   clear() {
     this.searchInputValue = '';
     this.dataSource.data = [];
+    this.notFoundIds = [];
     this.displayResults = false;
     this.setSelectedObject(undefined);
   }
@@ -89,7 +91,10 @@ export class ProductionStatusComponent {
     forkJoin(this.normalizeNames(uniqueDescriptions).filter(Boolean).map(description => {
       return this.productionService
         .searchByUrn(description)
-        .pipe(tap(item => this.dataSource.data.push(item)))
+        .pipe(tap(item => {
+          if (!item) this.notFoundIds.push(description);
+          else this.dataSource.data.push(item)
+        }))
     }))
       .subscribe({
         next: () => {

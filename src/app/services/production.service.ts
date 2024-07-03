@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {DigitizedItem} from "../models/digitized-item.model";
-import {map, mergeMap, Observable, of, tap} from "rxjs";
+import {catchError, map, mergeMap, Observable, of, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {DigitizedItemBuilder} from "../builders/digitized-item.builder";
 import {ItemEvent} from "../models/item-event.model";
 import {ItemEventBuilder} from "../builders/item-event.builder";
+import {MaterialTypeEnum} from "../enums/material-type.enum";
 
 @Injectable({
   providedIn: 'root',
@@ -16,28 +17,39 @@ export class ProductionService {
     private http: HttpClient
   ) { }
 
-  searchByUrn(searchQuery: string): Observable<DigitizedItem> {
+  searchByUrn(searchQuery: string): Observable<DigitizedItem | undefined> {
     return this.http.get<DigitizedItem>(`/papi/proddb/${searchQuery}`).pipe(
       map(item => new DigitizedItemBuilder(item).build()),
       mergeMap(item => {
-          if (item.id) {
-            return this.getRelatedItems(item.id).pipe(
-              map(relatedItems => {
-                item.childItems = relatedItems;
-                return item;
-              })
-            );
-          }
-          return of(item);
+        if (item.id && (item.type === MaterialTypeEnum.NewspaperBundle || item.type === MaterialTypeEnum.PeriodicalBundle)) {
+          return this.getRelatedItems(item.id).pipe(
+            map(relatedItems => {
+              item.childItems = relatedItems;
+              return item;
+            }),
+            catchError(err => {
+              console.error(`Error fetching related items for ${item.id}:`, err);
+              return of(item);
+            })
+          );
         }
-      ),
+        return of(item);
+      }),
       mergeMap(item => {
         return this.getEventsById(item.id?.toString()!!).pipe(
           map(events => {
             item.events = events;
             return item;
+          }),
+          catchError(err => {
+            console.error(`Error fetching events for ${item.id}:`, err);
+            return of(item);
           })
-        )
+        );
+      }),
+      catchError(err => {
+        console.error(`Error fetching item ${searchQuery}:`, err);
+        return of(undefined);
       })
     );
   }
