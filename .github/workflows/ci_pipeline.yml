@@ -75,9 +75,9 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
 
-      - name: Get proxy settings
+      - name: Set environment file
         run: |
-          echo ${{secrets.PROXY_CONFIG}} | base64 -d > proxy.conf.json
+          echo ${{secrets.ENVIRONMENT_FILE}} | base64 -d > src/environments/environment.ts
 
       - name: Build and push image
         uses: docker/build-push-action@v5
@@ -86,10 +86,6 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: Dockerfile
-          build-args: |
-            HTTP_PROXY=${{ secrets.HTTP_PROXY }}
-            HTTPS_PROXY=${{ secrets.HTTPS_PROXY }}
 
   deploy-to-stage:
     name: Deploy stage environment
