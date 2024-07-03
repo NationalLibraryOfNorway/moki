@@ -36,15 +36,11 @@ tr.detail-row {
   border-bottom-width: 0;
 }
 
-.expanded-row-container {
-  background-color: whitesmoke;
-}
-
 .expanded-row-content {
   overflow: hidden;
   display: flex;
 }
 
-.selected-row {
+.table-row-selected {
   background-color: whitesmoke;
 }
