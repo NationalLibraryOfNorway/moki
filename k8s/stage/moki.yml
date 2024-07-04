@@ -21,6 +21,9 @@ spec:
           ports:
             - name: app-port
               containerPort: 4200
+          env:
+            - name: MODE
+              value: stage
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
