@@ -51,6 +51,12 @@ jobs:
         with:
           driver: docker
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
       - name: Import secrets
         id: import-secrets
         uses: hashicorp/vault-action@v3
