@@ -27,13 +27,13 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Set environment file
         run: |
           base64 --version
-          echo ${{secrets.ENVIRONMENT_FILE}} | base64 -d > src/environments/environment.ts
+          echo ${{secrets.ENVIRONMENT_STAGE}} | base64 -d > src/environments/environment.ts
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build application
         run: npm run build
