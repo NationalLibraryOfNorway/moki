@@ -1,13 +1,8 @@
-FROM node:20-alpine as build
+FROM nginx:1.27.0-alpine
 
-WORKDIR /app
+COPY dist /usr/share/nginx/html/
 
-COPY package.json package-lock.json ./
+# Copy template files ready for environment variable substitution
+COPY nginx.conf.template /etc/nginx/templates/
 
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
-CMD ["npm", "start"]
+CMD ["nginx-debug", "-g", "daemon off;"]

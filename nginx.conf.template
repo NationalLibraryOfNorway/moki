@@ -1,0 +1,11 @@
+server {
+  listen 8084;
+  absolute_redirect off;
+  rewrite_log on;
+
+  location /moki {
+    alias /usr/share/nginx/html/${MODE};
+    try_files $uri $uri/ /moki/index.html;
+  }
+
+}
