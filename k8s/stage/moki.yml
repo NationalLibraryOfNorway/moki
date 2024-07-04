@@ -61,7 +61,7 @@ spec:
               service:
                 name: moki-service
                 port:
-                  number: 4200
+                  number: 80
 
 ---
 
@@ -71,7 +71,7 @@ metadata:
   name: moki-service
 spec:
   ports:
-    - port: 4200
+    - port: 80
       name: gui
       targetPort: 4200
   selector:
