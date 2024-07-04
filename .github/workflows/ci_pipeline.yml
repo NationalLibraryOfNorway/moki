@@ -32,6 +32,7 @@ jobs:
 
       - name: Set environment file
         run: |
+          base64 --version
           echo ${{secrets.ENVIRONMENT_FILE}} | base64 -d > src/environments/environment.ts
 
       - name: Build application
