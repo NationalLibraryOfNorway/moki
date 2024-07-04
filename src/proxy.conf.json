@@ -1,6 +1,6 @@
 {
   "/papi": {
-    "target": "https://k8s.stage.nb.no",
+    "target": "http://localhost:8087",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

@@ -29,7 +29,7 @@ jobs:
 
       - name: Set environment file
         run: |
-          echo ${{secrets.ENVIRONMENT_STAGE}} | base64 -d > src/environments/environment.ts
+          echo ${{secrets.PROXY_STAGE}} | base64 -d > src/proxy.conf.json
 
       - name: Install dependencies
         run: npm install
@@ -82,10 +82,13 @@ jobs:
       - name: Set environment file based on ref
         run: |
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "${{ secrets.ENVIRONMENT_PROD }}" > src/environments/environment.ts
+            echo "${{ secrets.PROXY_PROD }}" > src/proxy.conf.json
           else
-            echo "${{ secrets.ENVIRONMENT_STAGE }}" > src/environments/environment.ts
+            echo "${{ secrets.PROXY_STAGE }}" > src/proxy.conf.json
           fi
+
+      - name: Build project
+        run: npm run build
 
       - name: Build and push image
         uses: docker/build-push-action@v5
@@ -124,8 +127,8 @@ jobs:
       - name: Deploy to stage cluster
         run: |
           echo "Deploying to stage version ${{ env.APP_VERSION }}"
-          sed -i "s/<version>/${{ env.APP_VERSION }}/g" k8s/stage/deployment.yml
-          sed -i "s/<host_url>/${{ steps.import-secrets.outputs.K8S_HOST_URL }}/g" k8s/stage/ingress.yml
+          sed -i "s/<version>/${{ env.APP_VERSION }}/g" k8s/stage/moki.yml
+          sed -i "s/<host_url>/${{ steps.import-secrets.outputs.K8S_HOST_URL }}/g" k8s/stage/moki.yml
           kubectl config set-cluster stagecl --server=${{ steps.import-secrets.outputs.K8S_STAGE_SERVER }}
           kubectl config set clusters.stagecl.certificate-authority-data ${{ steps.import-secrets.outputs.K8S_STAGE_NB_NO_CA }}
           kubectl config set-credentials ${{ steps.import-secrets.outputs.K8S_STAGE_USER }} --token=${{ steps.import-secrets.outputs.K8S_STAGE_NB_NO_TOKEN }}
