@@ -29,7 +29,6 @@ jobs:
 
       - name: Set environment file
         run: |
-          base64 --version
           echo ${{secrets.ENVIRONMENT_STAGE}} | base64 -d > src/environments/environment.ts
 
       - name: Install dependencies
@@ -41,7 +40,7 @@ jobs:
   build-and-publish:
     name: Create and push Docker image
     needs: lint-and-test
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    # if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: [self-hosted-linux]
     steps:
       - name: Checkout the repository
@@ -80,9 +79,13 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
 
-      - name: Set environment file
+      - name: Set environment file based on ref
         run: |
-          echo ${{secrets.ENVIRONMENT_FILE}} | base64 -d > src/environments/environment.ts
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "${{ secrets.ENVIRONMENT_PROD }}" > src/environments/environment.ts
+          else
+            echo "${{ secrets.ENVIRONMENT_STAGE }}" > src/environments/environment.ts
+          fi
 
       - name: Build and push image
         uses: docker/build-push-action@v5
@@ -96,7 +99,7 @@ jobs:
     name: Deploy stage environment
     needs: build-and-publish
     runs-on: [self-hosted-linux]
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     environment: stage
     steps:
       - name: Checkout the repository
