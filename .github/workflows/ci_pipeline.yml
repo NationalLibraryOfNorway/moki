@@ -27,9 +27,13 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Set environment file
+      - name: Set environment file based on ref
         run: |
-          echo ${{secrets.PROXY_STAGE}} | base64 -d > src/proxy.conf.json
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "${{ secrets.PROXY_PROD }}" > src/proxy.conf.json
+          else
+            echo "${{ secrets.PROXY_STAGE }}" > src/proxy.conf.json
+          fi
 
       - name: Install dependencies
         run: npm install
@@ -70,7 +74,6 @@ jobs:
         with:
           driver: docker
 
-
       - name: Import secrets
         id: import-secrets
         uses: hashicorp/vault-action@v3
@@ -98,17 +101,6 @@ jobs:
             type=semver,pattern={{version}}
             type=ref,event=branch
             type=ref,event=pr
-
-      - name: Set environment file based on ref
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "${{ secrets.PROXY_PROD }}" > src/proxy.conf.json
-          else
-            echo "${{ secrets.PROXY_STAGE }}" > src/proxy.conf.json
-          fi
-
-      - name: Build project
-        run: npm run build
 
       - name: Build and push image
         uses: docker/build-push-action@v5
