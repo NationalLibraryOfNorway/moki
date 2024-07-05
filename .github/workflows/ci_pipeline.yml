@@ -114,8 +114,8 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      - name: Import secrets
-        id: import-secrets
+      - name: Import k8s secrets
+        id: import-k8s-secrets
         uses: hashicorp/vault-action@v3
         with:
           url: ${{ secrets.VAULT_URL }}
@@ -123,7 +123,17 @@ jobs:
           roleId: ${{ secrets.VAULT_ROLE_ID }}
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           secrets: |
-            kv/team/text/data/k8s-text-stage * ;
+            kv/team/text/data/k8s-text-stage *
+
+      - name: Import harbor secrets
+        id: import-harbor-secrets
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ secrets.VAULT_URL }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
             kv/team/text/data/harbor *
 
       - name: Set up kubectl
@@ -134,12 +144,12 @@ jobs:
       - name: Deploy to stage cluster
         run: |
           echo "Deploying to stage version ${{ env.APP_VERSION }}"
-          sed -i "s/<image>/${{ steps.import-secrets.outputs.HARBOR_URL }}\/tekst\/moki:${{ needs.build-and-publish.outputs.version }}/g" k8s/stage/moki.yml
-          sed -i "s/<host_url>/${{ steps.import-secrets.outputs.K8S_HOST_URL }}/g" k8s/stage/moki.yml
-          kubectl config set-cluster stagecl --server=${{ steps.import-secrets.outputs.K8S_STAGE_SERVER }}
-          kubectl config set clusters.stagecl.certificate-authority-data ${{ steps.import-secrets.outputs.K8S_STAGE_NB_NO_CA }}
-          kubectl config set-credentials ${{ steps.import-secrets.outputs.K8S_STAGE_USER }} --token=${{ steps.import-secrets.outputs.K8S_STAGE_NB_NO_TOKEN }}
-          kubectl config set-context tekst --cluster=stagecl --user=${{ steps.import-secrets.outputs.K8S_STAGE_USER }} --namespace=tekst-stage
+          sed -i "s/<image>/${{ steps.import-harbor-secrets.outputs.HARBOR_URL }}\/tekst\/moki:${{ needs.build-and-publish.outputs.version }}/g" k8s/stage/moki.yml
+          sed -i "s/<host_url>/${{ steps.import-k8s-secrets.outputs.K8S_HOST_URL }}/g" k8s/stage/moki.yml
+          kubectl config set-cluster stagecl --server=${{ steps.import-k8s-secrets.outputs.K8S_STAGE_SERVER }}
+          kubectl config set clusters.stagecl.certificate-authority-data ${{ steps.import-k8s-secrets.outputs.K8S_STAGE_NB_NO_CA }}
+          kubectl config set-credentials ${{ steps.import-k8s-secrets.outputs.K8S_STAGE_USER }} --token=${{ steps.import-k8s-secrets.outputs.K8S_STAGE_NB_NO_TOKEN }}
+          kubectl config set-context tekst --cluster=stagecl --user=${{ steps.import-k8s-secrets.outputs.K8S_STAGE_USER }} --namespace=tekst-stage
           kubectl config use-context tekst
           kubectl config view
           kubectl version
