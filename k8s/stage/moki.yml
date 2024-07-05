@@ -20,7 +20,7 @@ spec:
           image: harbor.nb.no/tekst/moki:<version>
           ports:
             - name: app-port
-              containerPort: 8087
+              containerPort: 4200
           imagePullPolicy: Always
 
 ---
@@ -42,7 +42,7 @@ spec:
               service:
                 name: moki-service
                 port:
-                  number: 8087
+                  number: 80
 
 ---
 
@@ -52,9 +52,9 @@ metadata:
   name: moki-service
 spec:
   ports:
-    - port: 8087
+    - port: 4200
       name: gui
-      targetPort: 8087
+      targetPort: 80
   selector:
     app: moki
   type: ClusterIP

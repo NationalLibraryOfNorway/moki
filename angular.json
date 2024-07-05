@@ -64,33 +64,6 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
-            },
-            "production-2": {
-              "baseHref": "/moki/",
-              "assets": [
-                {
-                  "glob": "**/*",
-                  "input": "public",
-                  "output": "assets"
-                }
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
-                }
-              ],
-              "outputHashing": "all",
-              "outputPath": {
-                "base": "dist/moki",
-                "browser": ""
-              }
             }
           },
           "defaultConfiguration": "production"
