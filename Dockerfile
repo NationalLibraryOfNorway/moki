@@ -6,6 +6,6 @@ COPY dist/moki/browser /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose ports
-EXPOSE 80 443 6006 4200
+#EXPOSE 80 443 6006 4200
 
 CMD ["nginx-debug", "-g", "daemon off;"]
