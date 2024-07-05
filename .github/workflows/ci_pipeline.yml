@@ -27,14 +27,6 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Set environment file based on ref
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "${{ secrets.PROXY_PROD }}" > src/proxy.conf.json
-          else
-            echo "${{ secrets.PROXY_STAGE }}" > src/proxy.conf.json
-          fi
-
       - name: Install dependencies
         run: npm install
 
@@ -98,7 +90,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.HARBOR_URL }}/tekst/moki
+          images: ${{ steps.import-secrets.outputs.HARBOR_URL }}/tekst/moki
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
