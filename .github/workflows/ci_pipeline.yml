@@ -14,8 +14,8 @@ env:
   APP_VERSION: ${{ github.ref_name }}
 
 jobs:
-  lint-and-test:
-    name: Run linter and tests
+  build-and-upload-artifact:
+    name: Build and upload artifact
     runs-on: [self-hosted-linux]
     steps:
       - name: Checkout the repository
@@ -45,7 +45,7 @@ jobs:
 
   build-and-publish:
     name: Create and push Docker image
-    needs: lint-and-test
+    needs: build-and-upload-artifact
     # if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: [self-hosted-linux]
     outputs:
@@ -96,9 +96,6 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
 
-      - name: Debug tag
-        run: echo ${{ steps.meta.outputs.tags }}
-
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
@@ -126,7 +123,7 @@ jobs:
           roleId: ${{ secrets.VAULT_ROLE_ID }}
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           secrets: |
-            kv/team/text/data/k8s-text-stage *
+            kv/team/text/data/k8s-text-stage * ;
             kv/team/text/data/harbor HARBOR_URL
 
       - name: Set up kubectl
