@@ -56,6 +56,8 @@ jobs:
     needs: lint-and-test
     # if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: [self-hosted-linux]
+    outputs:
+      image: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -96,7 +98,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: harbor.nb.no/tekst/moki
+          images: ${{ secrets.HARBOR_URL }}/tekst/moki
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
@@ -139,7 +141,7 @@ jobs:
       - name: Deploy to stage cluster
         run: |
           echo "Deploying to stage version ${{ env.APP_VERSION }}"
-          sed -i "s/<version>/${{ env.APP_VERSION }}/g" k8s/stage/moki.yml
+          sed -i "s/<version>/${{ needs.build-and-publish.outputs.image_version }}/g" k8s/stage/moki.yml
           sed -i "s/<host_url>/${{ steps.import-secrets.outputs.K8S_HOST_URL }}/g" k8s/stage/moki.yml
           kubectl config set-cluster stagecl --server=${{ steps.import-secrets.outputs.K8S_STAGE_SERVER }}
           kubectl config set clusters.stagecl.certificate-authority-data ${{ steps.import-secrets.outputs.K8S_STAGE_NB_NO_CA }}

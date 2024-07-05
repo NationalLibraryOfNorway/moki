@@ -17,11 +17,27 @@ spec:
     spec:
       containers:
         - name: moki
-          image: harbor.nb.no/tekst/moki:<version>
+          image: <image>
           ports:
             - name: app-port
               containerPort: 4200
           imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /moki
+              port: app-port
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 3
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /moki
+              port: app-port
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 1
 
 ---
 
