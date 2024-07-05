@@ -1,6 +1,6 @@
 FROM nginx:1.27.0-alpine
 
-COPY dist/moki/browser /usr/share/nginx/html
+COPY dist /usr/share/nginx/html
 
 # Copy template files ready for environment variable substitution
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
