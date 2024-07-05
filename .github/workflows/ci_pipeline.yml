@@ -141,7 +141,7 @@ jobs:
       - name: Deploy to stage cluster
         run: |
           echo "Deploying to stage version ${{ env.APP_VERSION }}"
-          sed -i "s/<version>/${{ needs.build-and-publish.outputs.image_version }}/g" k8s/stage/moki.yml
+          sed -i "s/<image>/${{ needs.build-and-publish.outputs.image }}/g" k8s/stage/moki.yml
           sed -i "s/<host_url>/${{ steps.import-secrets.outputs.K8S_HOST_URL }}/g" k8s/stage/moki.yml
           kubectl config set-cluster stagecl --server=${{ steps.import-secrets.outputs.K8S_STAGE_SERVER }}
           kubectl config set clusters.stagecl.certificate-authority-data ${{ steps.import-secrets.outputs.K8S_STAGE_NB_NO_CA }}
