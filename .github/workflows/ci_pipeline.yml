@@ -123,8 +123,8 @@ jobs:
           roleId: ${{ secrets.VAULT_ROLE_ID }}
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           secrets: |
-            kv/team/text/data k8s-text-stage | * ;
-            kv/team/text/data harbor | HARBOR_URL
+            kv/team/text/data/k8s-text-stage * ;
+            kv/team/text/data/harbor *
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
