@@ -36,7 +36,10 @@ export class ProductionService {
         return of(item);
       }),
       mergeMap(item => {
-        return this.getEventsById(item.id?.toString()!!).pipe(
+        if (!item.id) {
+          return of(item);
+        }
+        return this.getEventsById(item.id).pipe(
           map(events => {
             item.events = events;
             return item;
@@ -54,7 +57,7 @@ export class ProductionService {
     );
   }
 
-  private getEventsById(id: string): Observable<ItemEvent[]> {
+  getEventsById(id: number): Observable<ItemEvent[]> {
     return this.http.get<ItemEvent[]>(`/papi/proddb/${id}/events`).pipe(
       map(items => items.map(item => new ItemEventBuilder(item).build())),
       // TODO: Change sort to follow actual step order
@@ -65,10 +68,45 @@ export class ProductionService {
     );
   }
 
-  private getRelatedItems(id: number): Observable<DigitizedItem[]> {
+  getRelatedItems(id: number): Observable<DigitizedItem[]> {
     return this.http.get<DigitizedItem[]>(`/papi/proddb/${id}/children`).pipe(
       map(items => items.map(item => new DigitizedItemBuilder(item).build()))
     );
   }
 
+  isSupportedMaterialType(productionLineId: number): boolean {
+    return this.isDigitizedPeriodical(productionLineId) ||
+      productionLineId === 16 ||  // Bøker - Ordinær bokløype
+      productionLineId === 24 ||  // Bøker - Komplett fra POS
+      productionLineId === 30 ||  // Bøker - Ordinær bokløype v2
+      productionLineId === 32 ||  // Bøker - Komplett fra POS v2
+      productionLineId === 39;    // Bøker - DFB Cover
+  }
+
+  isDigitizedPeriodical(productionLineId: number): boolean {
+    return productionLineId === 26 || // Demonteringsskanning v2 (Flere hefter)
+      productionLineId === 27 ||      // POS og V-form skanning v2 (1) (Return m/omslag)
+      productionLineId === 28 ||      // POS og demonteringsskanning v2 (Kassering m/omslag)
+      productionLineId === 37;        // Tidsskrift - Komplett (Enkelthefte)
+  }
+
+  itemIsFinished(item: DigitizedItem): boolean {
+    switch (item.type) {
+      case MaterialTypeEnum.Book:
+        return item.status === 'moveToPreservation.done' || item.status === 'AddToSearchIndex.done';
+      case MaterialTypeEnum.Periodical:
+        return item.status === 'moveToPreservation.done' || item.status === 'AddToSearchIndex.done';
+      case MaterialTypeEnum.PeriodicalBundle:
+        // If parent does not have split periodika as final status, return false
+        if (item.status !== 'SplitPeriodika.done') {
+          return false;
+        }
+        // If any child item does not have moveToPreservation.done or AddToSearchIndex.done, return false
+        return item.childItems?.every(childItem => {
+          return childItem.status === 'moveToPreservation.done' || childItem.status === 'AddToSearchIndex.done';
+        }) ?? false;
+      default:
+        return false;
+    }
+  }
 }

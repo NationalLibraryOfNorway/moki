@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {DatePipe} from "@angular/common";
 import {
   MatCard,
@@ -22,6 +22,7 @@ import {MatIcon} from "@angular/material/icon";
 import {DigitizedItem} from "../../models/digitized-item.model";
 import {ItemEvent} from "../../models/item-event.model";
 import {MatTooltip} from "@angular/material/tooltip";
+import {ProductionService} from "../../services/production.service";
 
 @Component({
   selector: 'app-production-details',
@@ -50,7 +51,8 @@ import {MatTooltip} from "@angular/material/tooltip";
   templateUrl: './production-details.component.html',
   styleUrl: './production-details.component.scss'
 })
-export class ProductionDetailsComponent {
+export class ProductionDetailsComponent implements OnInit {
+  @Input() isChild: boolean = false;
   @Input() selectedObject: DigitizedItem;
   @Input() eventsDataSource: MatTableDataSource<ItemEvent> = new MatTableDataSource<ItemEvent>([]);
   readonly eventColumns: string[] = [
@@ -62,4 +64,15 @@ export class ProductionDetailsComponent {
     'completed',
     'completedBy'
   ];
+
+  constructor(private productionService: ProductionService) {
+  }
+
+  ngOnInit() {
+    if (this.isChild && this.selectedObject.id) {
+      this.productionService.getEventsById(this.selectedObject.id).subscribe(events => {
+        this.eventsDataSource.data = events;
+      })
+    }
+  }
 }

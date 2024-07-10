@@ -15,6 +15,7 @@ import {MaterialTypeEnum} from "../../enums/material-type.enum";
 import {environment} from "../../../environments/environment";
 import {ProductionDetailsComponent} from "../production-details/production-details.component";
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {ChildItemComponent} from "../child-item/child-item.component";
 
 @Component({
   selector: 'app-production-status',
@@ -29,7 +30,8 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
     FormsModule,
     DatePipe,
     AsyncPipe,
-    ProductionDetailsComponent
+    ProductionDetailsComponent,
+    ChildItemComponent
   ],
   templateUrl: './production-status.component.html',
   styleUrl: './production-status.component.scss',
@@ -120,39 +122,19 @@ export class ProductionStatusComponent {
   }
 
   itemIsFinished(item: DigitizedItem): boolean {
-    switch (item.type) {
-      case MaterialTypeEnum.Book:
-        return item.status === 'moveToPreservation.done' || item.status === 'AddToSearchIndex.done';
-      case MaterialTypeEnum.Periodical:
-        return item.status === 'moveToPreservation.done' || item.status === 'AddToSearchIndex.done';
-      case MaterialTypeEnum.PeriodicalBundle:
-        // If parent does not have split periodika as final status, return false
-        if (item.status !== 'SplitPeriodika.done') {
-          return false;
-        }
-        // If any child item does not have moveToPreservation.done or AddToSearchIndex.done, return false
-        return item.childItems?.every(childItem => {
-          return childItem.status === 'moveToPreservation.done' || childItem.status === 'AddToSearchIndex.done';
-        }) ?? false;
-      default:
-        return false;
-    }
+    return this.productionService.itemIsFinished(item);
   }
 
   isSupportedMaterialType(productionLineId: number): boolean {
-    return this.isDigitizedPeriodical(productionLineId) ||
-      productionLineId === 16 ||  // Bøker - Ordinær bokløype
-      productionLineId === 24 ||  // Bøker - Komplett fra POS
-      productionLineId === 30 ||  // Bøker - Ordinær bokløype v2
-      productionLineId === 32 ||  // Bøker - Komplett fra POS v2
-      productionLineId === 39;    // Bøker - DFB Cover
+    return this.productionService.isSupportedMaterialType(productionLineId);
   }
 
   isDigitizedPeriodical(productionLineId: number): boolean {
-    return productionLineId === 26 || // Demonteringsskanning v2 (Flere hefter)
-      productionLineId === 27 ||      // POS og V-form skanning v2 (1) (Return m/omslag)
-      productionLineId === 28 ||      // POS og demonteringsskanning v2 (Kassering m/omslag)
-      productionLineId === 37;        // Tidsskrift - Komplett (Enkelthefte)
+    return this.productionService.isDigitizedPeriodical(productionLineId);
+  }
+
+  displayChildItems(item: DigitizedItem): boolean {
+    return (item.type === MaterialTypeEnum.PeriodicalBundle || item.type === MaterialTypeEnum.NewspaperBundle) && (item.childItems?.length ?? 0) > 0;
   }
 
 }

@@ -44,3 +44,13 @@ tr.detail-row {
 .table-row-selected {
   background-color: whitesmoke;
 }
+
+.child-item-list-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: whitesmoke;
+  padding: .5em;
+  margin-top: 0.5em;
+}

@@ -12,7 +12,7 @@ export class ItemEventBuilder {
     res.type = this.data?.type;
     res.status = this.data?.status;
     res.statusText = this.data?.statusText;
-    res.started = new DateBuilder(this.data?.started?.toString()).build() ?? undefined;;
+    res.started = new DateBuilder(this.data?.started?.toString()).build() ?? undefined;
     res.startedBy = this.data?.startedBy;
     res.completed = new DateBuilder(this.data?.completed?.toString()).build() ?? undefined;
     res.completedBy = this.data?.completedBy;

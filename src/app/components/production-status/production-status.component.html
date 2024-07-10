@@ -91,8 +91,16 @@
             <div [@detailExpand]="element == selectedObject ? 'expanded' : 'collapsed'">
                 @if (selectedObject) {
                   <app-production-details [selectedObject]="selectedObject" [eventsDataSource]="eventsDataSource" />
+                  @if (displayChildItems(selectedObject)) {
+                    <div class="child-item-list-container">
+                      <h6>Hefter:</h6>
+                      @for (child of selectedObject.childItems; track child.id) {
+                        <app-child-item [child]="child" />
+                      }
+                    </div>
+                  }
                 }
-              </div>
+            </div>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
