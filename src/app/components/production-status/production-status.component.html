@@ -89,7 +89,7 @@
         <ng-container matColumnDef="expandedDetail">
           <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
             <div [@detailExpand]="element == selectedObject ? 'expanded' : 'collapsed'">
-                @if (selectedObject) {
+                @if (selectedObject && element.id === selectedObject.id) {
                   <app-production-details [selectedObject]="selectedObject" [eventsDataSource]="eventsDataSource" />
                   @if (displayChildItems(selectedObject)) {
                     <div class="child-item-list-container">
