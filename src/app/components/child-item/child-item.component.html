@@ -1,0 +1,39 @@
+<mat-expansion-panel class="child-item">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{child.description}}
+    </mat-panel-title>
+    <mat-panel-description>
+      <span class="child-item-summary-text">{{child.status}}</span>
+      @if (!isSupportedMaterialType()) {
+        <mat-icon [matTooltip]="'Materialtypen er ikke direkte støttet, sjekk manuelt om objektet kan sendes videre'">image_not_supported</mat-icon>
+      } @else if (itemIsFinished()) {
+        <mat-icon color="primary" [matTooltip]="'Kan sendes videre, siste status: ' + child.status">thumb_up</mat-icon>
+      } @else {
+        <mat-icon color="warn" [matTooltip]="'Kan ikke sendes videre, siste status: ' + child.status">thumb_down</mat-icon>
+      }
+      @if (child.status === 'AddToSearchIndex.done') {
+        <a
+          mat-button
+          href="https://urn.nb.no/URN:NBN:no-nb_{{child.description}}"
+          target="_blank"
+          matTooltip="Trykk for å åpne i nb.no"
+        >
+          Se i nettbiblioteket
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      }
+      <a
+        mat-button
+        href="{{relationUrl}}/{{child.id}}"
+        target="_blank"
+        matTooltip="Åpne i Relation"
+      >
+        Se i Relation
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <app-production-details [selectedObject]="child" [isChild]="true"/>
+</mat-expansion-panel>
