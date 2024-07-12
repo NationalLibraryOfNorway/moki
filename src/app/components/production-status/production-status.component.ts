@@ -91,16 +91,23 @@ export class ProductionStatusComponent {
 
     const descriptions = this.searchInputValue.split('\n').map(s => s.trim());
     const uniqueDescriptions = Array.from(new Set(descriptions));
+    const tempData: DigitizedItem[] = [];
     forkJoin(this.normalizeNames(uniqueDescriptions).filter(Boolean).map(description => {
       return this.productionService
         .searchByUrn(description)
         .pipe(tap(item => {
           if (!item) this.notFoundIds.push(description);
-          else this.dataSource.data.push(item)
+          else tempData.push(item);
         }))
     }))
       .subscribe({
         next: () => {
+          this.dataSource.data = tempData.sort((a, b) => {
+            if (!a.description || !b.description) {
+              return 0;
+            }
+            return uniqueDescriptions.indexOf(a.description) - uniqueDescriptions.indexOf(b.description)
+          });
           this.displayResults = true;
         },
         error: err => {
