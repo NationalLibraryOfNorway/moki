@@ -197,6 +197,7 @@ jobs:
         run: |
           echo "Deploying to production version ${{ env.APP_VERSION }}"
           sed -i "s|<image>|${{ steps.import-harbor-secrets.outputs.HARBOR_URL }}/tekst/moki:${{ needs.build-and-publish.outputs.image_version }}|g" k8s/prod/moki.yml
+          sed -i "s/<host_url>/${{ steps.import-k8s-secrets.outputs.K8S_PRODUCTION_HOST_URL }}/g" k8s/prod/moki.yml
           kubectl config set-cluster prodcl --server=${{ steps.import-k8s-secrets.outputs.K8S_PROD_SERVER }}
           kubectl config set clusters.prodcl.certificate-authority-data ${{ steps.import-k8s-secrets.outputs.K8S_PROD_NB_NO_CA }}
           kubectl config set-credentials ${{ steps.import-k8s-secrets.outputs.K8S_PROD_USER }} --token=${{ steps.import-k8s-secrets.outputs.K8S_PROD_NB_NO_TOKEN }}
