@@ -155,3 +155,55 @@ jobs:
           kubectl version
           kubectl apply -f k8s/stage
           kubectl rollout restart deployment moki-deployment
+
+  deploy-to-prod:
+    name: Deploy production environment
+    needs: build-and-publish
+    runs-on: [self-hosted-linux]
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: production
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Import k8s secrets
+        id: import-k8s-secrets
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ secrets.VAULT_URL }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            kv/team/text/data/k8s-text-prod *
+
+      - name: Import harbor secrets
+        id: import-harbor-secrets
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ secrets.VAULT_URL }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            kv/team/text/data/harbor *
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.26.5'
+
+      - name: Deploy to production cluster
+        run: |
+          echo "Deploying to production version ${{ env.APP_VERSION }}"
+          sed -i "s|<image>|${{ steps.import-harbor-secrets.outputs.HARBOR_URL }}/tekst/moki:${{ needs.build-and-publish.outputs.image_version }}|g" k8s/prod/moki.yml
+          sed -i "s/<host_url>/${{ steps.import-k8s-secrets.outputs.K8S_PRODUCTION_HOST_URL }}/g" k8s/prod/moki.yml
+          kubectl config set-cluster prodcl --server=${{ steps.import-k8s-secrets.outputs.K8S_PROD_SERVER }}
+          kubectl config set clusters.prodcl.certificate-authority-data ${{ steps.import-k8s-secrets.outputs.K8S_PROD_NB_NO_CA }}
+          kubectl config set-credentials ${{ steps.import-k8s-secrets.outputs.K8S_PROD_USER }} --token=${{ steps.import-k8s-secrets.outputs.K8S_PROD_NB_NO_TOKEN }}
+          kubectl config set-context tekst --cluster=prodcl --user=${{ steps.import-k8s-secrets.outputs.K8S_PROD_USER }} --namespace=tekst-prod
+          kubectl config use-context tekst
+          kubectl config view
+          kubectl version
+          kubectl apply -f k8s/prod
+          kubectl rollout restart deployment moki-deployment
