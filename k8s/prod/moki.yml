@@ -21,6 +21,9 @@ spec:
           ports:
             - name: app-port
               containerPort: 4200
+          env:
+            - name: API_HOST_URL
+              value: <api_host_url>
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
