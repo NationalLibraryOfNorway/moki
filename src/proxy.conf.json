@@ -1,8 +1,11 @@
 {
   "/papi": {
-    "target": "http://localhost:8087",
+    "target": "http://localhost:8087/papi",
     "secure": false,
     "logLevel": "debug",
-    "changeOrigin": true
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/papi": ""
+    }
   }
 }
