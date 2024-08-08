@@ -4,7 +4,7 @@ COPY dist/moki/browser /usr/share/nginx/html/moki
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN apk add --no-cache bash
+RUN sudo apk add --no-cache bash
 
 EXPOSE 80
 
