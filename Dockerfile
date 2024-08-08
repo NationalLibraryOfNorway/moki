@@ -1,10 +1,8 @@
-FROM nginx:1.27.0-alpine
+FROM nginx:1.27.0
 
 COPY dist/moki/browser /usr/share/nginx/html/moki
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-RUN sudo apk add --no-cache bash
 
 EXPOSE 80
 
