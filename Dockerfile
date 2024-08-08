@@ -1,8 +1,14 @@
-FROM nginx:1.27.0
+FROM nginx:1.27.0-alpine
+
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTPS_PROXY
 
 COPY dist/moki/browser /usr/share/nginx/html/moki
-
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx /opt
+RUN rm /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
