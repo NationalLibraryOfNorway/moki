@@ -1,11 +1,11 @@
 {
-  "/api": {
+  "/moki/api": {
     "target": "http://localhost:8087",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "^/api": "/papi"
+      "^/moki/api": "/papi"
     }
   }
 }
