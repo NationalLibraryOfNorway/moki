@@ -18,7 +18,7 @@ export class ProductionService {
   ) { }
 
   searchByUrn(searchQuery: string): Observable<DigitizedItem | undefined> {
-    return this.http.get<DigitizedItem>(`/papi/proddb/${searchQuery}`).pipe(
+    return this.http.get<DigitizedItem>(`/api/proddb/${searchQuery}`).pipe(
       map(item => new DigitizedItemBuilder(item).build()),
       mergeMap(item => {
         if (item.id && (item.type === MaterialTypeEnum.NewspaperBundle || item.type === MaterialTypeEnum.PeriodicalBundle)) {
@@ -58,7 +58,7 @@ export class ProductionService {
   }
 
   getEventsById(id: number): Observable<ItemEvent[]> {
-    return this.http.get<ItemEvent[]>(`/papi/proddb/${id}/events`).pipe(
+    return this.http.get<ItemEvent[]>(`/api/proddb/${id}/events`).pipe(
       map(items => items.map(item => new ItemEventBuilder(item).build())),
       // TODO: Change sort to follow actual step order
       map(items => items.sort((a, b) => {
@@ -69,7 +69,7 @@ export class ProductionService {
   }
 
   getRelatedItems(id: number): Observable<DigitizedItem[]> {
-    return this.http.get<DigitizedItem[]>(`/papi/proddb/${id}/children`).pipe(
+    return this.http.get<DigitizedItem[]>(`/api/proddb/${id}/children`).pipe(
       map(items => items.map(item => new DigitizedItemBuilder(item).build()))
     );
   }
