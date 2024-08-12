@@ -111,7 +111,7 @@ jobs:
     name: Deploy stage environment
     needs: build-and-publish
     runs-on: [self-hosted-linux]
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
     environment: stage
     steps:
       - name: Checkout the repository
