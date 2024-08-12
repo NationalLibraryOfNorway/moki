@@ -46,7 +46,7 @@ jobs:
   build-and-publish:
     name: Create and push Docker image
     needs: build-and-upload-artifact
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    # if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: [self-hosted-linux]
     outputs:
       image_version: ${{ steps.meta.outputs.version }}
