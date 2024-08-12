@@ -6,6 +6,7 @@ import {DigitizedItemBuilder} from "../builders/digitized-item.builder";
 import {ItemEvent} from "../models/item-event.model";
 import {ItemEventBuilder} from "../builders/item-event.builder";
 import {MaterialTypeEnum} from "../enums/material-type.enum";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
@@ -13,12 +14,14 @@ import {MaterialTypeEnum} from "../enums/material-type.enum";
 })
 export class ProductionService {
 
+  private baseUrl = `${environment.baseHref}/api`
+
   constructor(
     private http: HttpClient
   ) { }
 
   searchByUrn(searchQuery: string): Observable<DigitizedItem | undefined> {
-    return this.http.get<DigitizedItem>(`/api/proddb/${searchQuery}`).pipe(
+    return this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/${searchQuery}`).pipe(
       map(item => new DigitizedItemBuilder(item).build()),
       mergeMap(item => {
         if (item.id && (item.type === MaterialTypeEnum.NewspaperBundle || item.type === MaterialTypeEnum.PeriodicalBundle)) {
@@ -58,7 +61,7 @@ export class ProductionService {
   }
 
   getEventsById(id: number): Observable<ItemEvent[]> {
-    return this.http.get<ItemEvent[]>(`/api/proddb/${id}/events`).pipe(
+    return this.http.get<ItemEvent[]>(`${this.baseUrl}/proddb/${id}/events`).pipe(
       map(items => items.map(item => new ItemEventBuilder(item).build())),
       // TODO: Change sort to follow actual step order
       map(items => items.sort((a, b) => {
@@ -69,7 +72,7 @@ export class ProductionService {
   }
 
   getRelatedItems(id: number): Observable<DigitizedItem[]> {
-    return this.http.get<DigitizedItem[]>(`/api/proddb/${id}/children`).pipe(
+    return this.http.get<DigitizedItem[]>(`${this.baseUrl}/proddb/${id}/children`).pipe(
       map(items => items.map(item => new DigitizedItemBuilder(item).build()))
     );
   }
