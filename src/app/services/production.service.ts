@@ -15,13 +15,21 @@ import {environment} from "../../environments/environment";
 export class ProductionService {
 
   private baseUrl = `${environment.baseHref}/api`
+  private almaBarcodeRegEx = new RegExp('^\\d{2}g\\d{6}$|^h\\d{2}\\w\\d{5}$|^h\\d{8}$');
 
   constructor(
     private http: HttpClient
   ) { }
 
-  searchByUrn(searchQuery: string): Observable<DigitizedItem | undefined> {
-    return this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/${searchQuery}`).pipe(
+  searchItem(searchQuery: string): Observable<DigitizedItem | undefined> {
+    let httpRequest: Observable<DigitizedItem>;
+    if (searchQuery.match(this.almaBarcodeRegEx)) {
+      httpRequest = this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/barcode/${searchQuery}`)
+    }
+    else {
+      httpRequest = this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/${searchQuery}`)
+    }
+    return httpRequest.pipe(
       map(item => new DigitizedItemBuilder(item).build()),
       mergeMap(item => {
         if (item.id && (item.type === MaterialTypeEnum.NewspaperBundle || item.type === MaterialTypeEnum.PeriodicalBundle)) {
