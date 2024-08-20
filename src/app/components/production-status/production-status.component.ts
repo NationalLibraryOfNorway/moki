@@ -89,14 +89,14 @@ export class ProductionStatusComponent {
     this.notFoundIds = [];
     this.selectedObject = undefined;
 
-    const descriptions = this.searchInputValue.split('\n').map(s => s.trim());
-    const uniqueDescriptions = Array.from(new Set(descriptions));
+    const searchInputs = this.searchInputValue.split('\n').map(s => s.trim());
+    const uniqueSearchInputs = Array.from(new Set(searchInputs));
     const tempData: DigitizedItem[] = [];
-    forkJoin(this.normalizeNames(uniqueDescriptions).filter(Boolean).map(description => {
+    forkJoin(this.normalizeNames(uniqueSearchInputs).filter(Boolean).map(searchTerm => {
       return this.productionService
-        .searchByUrn(description)
+        .searchItem(searchTerm)
         .pipe(tap(item => {
-          if (!item) this.notFoundIds.push(description);
+          if (!item) this.notFoundIds.push(searchTerm);
           else tempData.push(item);
         }))
     }))
@@ -106,7 +106,7 @@ export class ProductionStatusComponent {
             if (!a.description || !b.description) {
               return 0;
             }
-            return uniqueDescriptions.indexOf(a.description) - uniqueDescriptions.indexOf(b.description)
+            return uniqueSearchInputs.indexOf(a.description) - uniqueSearchInputs.indexOf(b.description)
           });
           this.displayResults = true;
         },
