@@ -26,7 +26,6 @@ export class ProductionService {
     if (this.isValidBarcode(searchQuery)) {
       httpQuery = this.http.get<DigitizedItem[]>(`${this.baseUrl}/proddb/barcode/${searchQuery}`).pipe(
         mergeMap(items => items.map(item => new DigitizedItemBuilder(item).build()))
-
       )
     } else {
       httpQuery = this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/${searchQuery}`).pipe(
