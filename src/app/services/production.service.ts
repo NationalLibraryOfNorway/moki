@@ -15,22 +15,25 @@ import {environment} from "../../environments/environment";
 export class ProductionService {
 
   private baseUrl = `${environment.baseHref}/api`
-  private almaBarcodeRegEx = new RegExp('^\\d{2}g\\d{6}$|^h\\d{2}\\w\\d{5}$|^h\\d{8}$');
 
   constructor(
     private http: HttpClient
   ) { }
 
   searchItem(searchQuery: string): Observable<DigitizedItem | undefined> {
-    let httpRequest: Observable<DigitizedItem>;
-    if (searchQuery.match(this.almaBarcodeRegEx)) {
-      httpRequest = this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/barcode/${searchQuery}`)
+    let httpQuery: Observable<DigitizedItem>;
+
+    if (this.isValidBarcode(searchQuery)) {
+      httpQuery = this.http.get<DigitizedItem[]>(`${this.baseUrl}/proddb/barcode/${searchQuery}`).pipe(
+        mergeMap(items => items.map(item => new DigitizedItemBuilder(item).build()))
+      )
+    } else {
+      httpQuery = this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/${searchQuery}`).pipe(
+        map(item => new DigitizedItemBuilder(item).build())
+      );
     }
-    else {
-      httpRequest = this.http.get<DigitizedItem>(`${this.baseUrl}/proddb/${searchQuery}`)
-    }
-    return httpRequest.pipe(
-      map(item => new DigitizedItemBuilder(item).build()),
+
+    return httpQuery.pipe(
       mergeMap(item => {
         if (item.id && (item.type === MaterialTypeEnum.NewspaperBundle || item.type === MaterialTypeEnum.PeriodicalBundle)) {
           return this.getRelatedItems(item.id).pipe(
@@ -119,5 +122,12 @@ export class ProductionService {
       default:
         return false;
     }
+  }
+
+  private isValidBarcode(barcode: string): boolean {
+    const barcodeVariant1 = new RegExp('^\\d{2}[a-zA-Z]{1,2}\\d{5}$');
+    const barcodeVariant2 = new RegExp('^\\d{2}[a-zA-Z]\\d{6}$');
+    const barcodeVariant3 = new RegExp('^h\\d{2}[a-zA-Z]\\d{5}$|^h\\d{8}$')
+    return barcodeVariant1.test(barcode) || barcodeVariant2.test(barcode) || barcodeVariant3.test(barcode);
   }
 }
