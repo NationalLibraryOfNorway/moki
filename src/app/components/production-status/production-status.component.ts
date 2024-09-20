@@ -94,7 +94,6 @@ export class ProductionStatusComponent {
     const uniqueSearchInputs = Array.from(new Set(searchInputs));
     const tempData: DigitizedItem[] = [];
     forkJoin(uniqueSearchInputs.filter(Boolean).map(searchTerm => {
-      console.log('Searching for: ', searchTerm);
       const normalizedSearchTerm = this.normalizeName(searchTerm);
       return this.productionService
         .searchItem(normalizedSearchTerm)
@@ -106,10 +105,10 @@ export class ProductionStatusComponent {
       .subscribe({
         next: () => {
           this.dataSource.data = tempData.sort((a, b) => {
-            if (!a.description || !b.description) {
+            if (!a.searchId || !b.searchId) {
               return 0;
             }
-            return uniqueSearchInputs.indexOf(a.description) - uniqueSearchInputs.indexOf(b.description)
+            return uniqueSearchInputs.indexOf(a.searchId) - uniqueSearchInputs.indexOf(b.searchId)
           });
           this.displayResults = true;
         },
