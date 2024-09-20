@@ -4,6 +4,7 @@ import {MaterialTypeEnum} from "../enums/material-type.enum";
 export class DigitizedItem {
   id?: number;
   description?: string;
+  searchId?: string;
   type?: MaterialTypeEnum;
   status?: string;
   createdBy?: string;
