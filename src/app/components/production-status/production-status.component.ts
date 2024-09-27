@@ -55,8 +55,9 @@ export class ProductionStatusComponent {
   readonly relationUrl = `${environment.relationUrl}/periodicals/issue`;
 
   readonly displayedColumns: string[] = [
-    'id',
+    'searchId',
     'description',
+    'id',
     'type',
     'status',
     'relationLink'
@@ -92,21 +93,22 @@ export class ProductionStatusComponent {
     const searchInputs = this.searchInputValue.split('\n').map(s => s.trim());
     const uniqueSearchInputs = Array.from(new Set(searchInputs));
     const tempData: DigitizedItem[] = [];
-    forkJoin(this.normalizeNames(uniqueSearchInputs).filter(Boolean).map(searchTerm => {
+    forkJoin(uniqueSearchInputs.filter(Boolean).map(searchTerm => {
+      const normalizedSearchTerm = this.normalizeName(searchTerm);
       return this.productionService
-        .searchItem(searchTerm)
+        .searchItem(normalizedSearchTerm)
         .pipe(tap(item => {
           if (!item) this.notFoundIds.push(searchTerm);
-          else tempData.push(item);
+          else tempData.push({...item, searchId: searchTerm});
         }))
     }))
       .subscribe({
         next: () => {
           this.dataSource.data = tempData.sort((a, b) => {
-            if (!a.description || !b.description) {
+            if (!a.searchId || !b.searchId) {
               return 0;
             }
-            return uniqueSearchInputs.indexOf(a.description) - uniqueSearchInputs.indexOf(b.description)
+            return uniqueSearchInputs.indexOf(a.searchId) - uniqueSearchInputs.indexOf(b.searchId)
           });
           this.displayResults = true;
         },
@@ -117,15 +119,12 @@ export class ProductionStatusComponent {
       })
   }
 
-  // Helper method to allow searching for digibok without the digibok_ prefix
-  normalizeNames(descriptions: string[]): string[] {
+  normalizeName(description: string): string {
     const regex = /^(19|20)\d\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])\d{5}$/;
-    return descriptions.map(description => {
-      if (regex.test(description)) {
-        return 'digibok_' + description;
-      }
-      return description;
-    });
+    if (regex.test(description)) {
+      return 'digibok_' + description;
+    }
+    return description;
   }
 
   itemIsFinished(item: DigitizedItem): boolean {
