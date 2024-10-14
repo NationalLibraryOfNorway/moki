@@ -1,5 +1,6 @@
 import {ItemEvent} from "./item-event.model";
 import {MaterialTypeEnum} from "../enums/material-type.enum";
+import {ItemIdentifier} from "./item-identifier.model";
 
 export class DigitizedItem {
   id?: number;
@@ -17,4 +18,5 @@ export class DigitizedItem {
   language?: string;
   events?: ItemEvent[];
   childItems?: DigitizedItem[];
+  identifiers?: ItemIdentifier[];
 }
