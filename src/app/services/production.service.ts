@@ -7,6 +7,7 @@ import {ItemEvent} from "../models/item-event.model";
 import {ItemEventBuilder} from "../builders/item-event.builder";
 import {MaterialTypeEnum} from "../enums/material-type.enum";
 import {environment} from "../../environments/environment";
+import {ItemIdentifier} from "../models/item-identifier.model";
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,21 @@ export class ProductionService {
           })
         );
       }),
+      mergeMap(item => {
+        if (!item.id) {
+          return of(item);
+        }
+        return this.getIdentifiersById(item.id).pipe(
+          map(identifiers => {
+            item.identifiers = identifiers;
+            return item;
+          }),
+          catchError(err => {
+            console.error(`Error fetching identifiers for ${item.id}:`, err);
+            return of(item);
+          })
+        );
+      }),
       catchError(err => {
         console.error(`Error fetching item ${searchQuery}:`, err);
         return of(undefined);
@@ -86,6 +102,10 @@ export class ProductionService {
     return this.http.get<DigitizedItem[]>(`${this.baseUrl}/proddb/${id}/children`).pipe(
       map(items => items.map(item => new DigitizedItemBuilder(item).build()))
     );
+  }
+
+  getIdentifiersById(id: number): Observable<ItemIdentifier[]> {
+    return this.http.get<ItemIdentifier[]>(`${this.baseUrl}/proddb/${id}/identifiers`);
   }
 
   isSupportedMaterialType(productionLineId: number): boolean {

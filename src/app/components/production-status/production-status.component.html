@@ -55,13 +55,13 @@
           <th mat-header-cell *matHeaderCellDef> Navn </th>
           <td mat-cell *matCellDef="let element"> {{element.description}} </td>
         </ng-container>
+        <ng-container matColumnDef="dokId">
+          <th mat-header-cell *matHeaderCellDef> DokID </th>
+          <td mat-cell *matCellDef="let element"> {{ getDokId(element.identifiers) }} </td>
+        </ng-container>
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef> Materialtype </th>
           <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-        </ng-container>
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef> Objekt-ID </th>
-          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell class="centered-cell" *matHeaderCellDef> Kan sendes videre? </th>
@@ -75,25 +75,21 @@
             }
           </td>
         </ng-container>
-        <ng-container matColumnDef="relationLink">
-          <th mat-header-cell class="centered-cell" *matHeaderCellDef> Se i Relation </th>
-          <td mat-cell class="centered-cell" *matCellDef="let element">
-            @if (isDigitizedPeriodical(element.plineId)) {
-              <a
-                mat-icon-button
-                href="{{relationUrl}}/{{element.id}}"
-                target="_blank"
-                matTooltip="Åpne i Relation"
-              >
-                <mat-icon color="primary">open_in_new</mat-icon>
-              </a>
-            }
-          </td>
-        </ng-container>
         <ng-container matColumnDef="expandedDetail">
           <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
             <div [@detailExpand]="element == selectedObject ? 'expanded' : 'collapsed'">
                 @if (selectedObject && element.id === selectedObject.id) {
+                  @if (isDigitizedPeriodical(element.plineId)) {
+                    <a
+                      mat-button
+                      href="{{relationUrl}}/{{element.id}}"
+                      target="_blank"
+                      matTooltip="Åpne i Relation"
+                    >
+                      Åpne i Relation
+                      <mat-icon color="primary">open_in_new</mat-icon>
+                    </a>
+                  }
                   <app-production-details [selectedObject]="selectedObject" [eventsDataSource]="eventsDataSource" />
                   @if (displayChildItems(selectedObject)) {
                     <div class="child-item-list-container">

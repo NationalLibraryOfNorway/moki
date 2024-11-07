@@ -16,6 +16,7 @@ import {environment} from "../../../environments/environment";
 import {ProductionDetailsComponent} from "../production-details/production-details.component";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ChildItemComponent} from "../child-item/child-item.component";
+import {ItemIdentifier} from "../../models/item-identifier.model";
 
 @Component({
   selector: 'app-production-status',
@@ -57,10 +58,9 @@ export class ProductionStatusComponent {
   readonly displayedColumns: string[] = [
     'searchId',
     'description',
-    'id',
+    'dokId',
     'type',
-    'status',
-    'relationLink'
+    'status'
   ];
 
   constructor(private productionService: ProductionService) {}
@@ -117,6 +117,10 @@ export class ProductionStatusComponent {
           this.displayResults = true;
         }
       })
+  }
+
+  getDokId(identifiers: ItemIdentifier[]): string | undefined {
+    return identifiers.find(i => i.name === 'bibsys_dokid_analog')?.value;
   }
 
   normalizeName(description: string): string {
