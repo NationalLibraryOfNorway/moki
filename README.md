@@ -2,13 +2,10 @@
 Verktøy for batch-oppslag av objekter i produksjonsløype.
 
 ## Lokalt oppsett
-For at applikasjonen skal fungere trengs tilkobling mot PAPI. I filen `src/proxy.conf.json` må du sette target til domenet hvor PAPI kjører.
+For at applikasjonen skal fungere trengs tilkobling mot PAPI. Proxy er satt opp i `vite.config.ts` og henter API-sti fra miljøvariabler.
 
 For å kjøre prosjektet lokalt, kjør følgende kommandoer:
 ```bash
 npm install
-npm start
+npm run dev
 ```
-
-Tester kan kjøres med:
-`npm test` eller `npm run test:ci` for headless tester.
