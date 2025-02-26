@@ -9,7 +9,7 @@ function App() {
     <ThemeProvider defaultTheme="system" storageKey="moki-ui-theme">
       <div className="min-h-screen flex-flex-col">
         <Header/>
-        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main className="flex-grow w-10/12 mx-auto px-4 sm:px-6 lg:px-8">
           <ProductionStatusLayout />
         </main>
       </div>

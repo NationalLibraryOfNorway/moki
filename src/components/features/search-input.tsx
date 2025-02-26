@@ -7,11 +7,14 @@ interface SearchInputProps {
   searchInputValue: string;
   setSearchInputValue: (value: string) => void;
   setSearchResults: (results: DigitizedItem[]) => void;
+  notFoundIds: string[];
+  setNotFoundIds: (ids: string[]) => void;
 }
 
 export const SearchInput = (props: SearchInputProps) => {
 
   const searchItems = () => {
+    props.setNotFoundIds([]);
     const searchInputs = props.searchInputValue.split('\n').map(s => s.trim());
     const uniqueSearchInputs = Array.from(new Set(searchInputs));
     const tempData: DigitizedItem[] = [];
@@ -20,6 +23,7 @@ export const SearchInput = (props: SearchInputProps) => {
       const item = await searchItem(normalizedSearchTerm);
       if (!item) {
         console.error(`Item ${normalizedSearchTerm} not found`);
+        props.setNotFoundIds([...props.notFoundIds, normalizedSearchTerm]);
       } else {
         tempData.push({...item, searchId: searchTerm});
       }
@@ -44,11 +48,17 @@ export const SearchInput = (props: SearchInputProps) => {
     return description;
   }
 
+  const rowHeight = (): number => {
+    return props.searchInputValue.split('\n').length + 1;
+  }
+
   return (
     <>
       <Textarea
         placeholder="Søk på strekkode"
-        className="w-1/3"
+        className="w-1/2"
+        autoFocus={true}
+        rows={rowHeight()}
         value={props.searchInputValue}
         onChange={e => props.setSearchInputValue(e.target.value)}
         onKeyDown={e => {
@@ -57,7 +67,7 @@ export const SearchInput = (props: SearchInputProps) => {
           }
         }}
       />
-      { props.searchInputValue.length > 0 && <Button className="rounded-2xl" onClick={searchItems}>Søk</Button> }
+     <Button className="rounded-2xl" onClick={searchItems}>Søk</Button>
     </>
 
   )

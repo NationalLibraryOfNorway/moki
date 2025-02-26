@@ -2,11 +2,13 @@ import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Table
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible.tsx";
 import {CollapsibleCell} from "@/components/ui/collapsible-cell.tsx";
 import {isSupportedMaterialType, itemIsFinished} from "@/services/production-data.ts";
-import {LuFile, LuThumbsDown, LuThumbsUp} from "react-icons/lu";
+import {LuThumbsDown, LuThumbsUp} from "react-icons/lu";
 import {DigitizedItem} from "@/models/digitized-item.ts";
 import {ItemIdentifier} from "@/models/item-identifier.ts";
 import {ProductionStatusDetails} from "@/components/features/production-status-details.tsx";
 import {MaterialType} from "@/enums/material-type.ts";
+import {ReactElement} from "react";
+import {toProperCase} from "@/lib/string-utils.ts";
 
 interface ItemTableProps {
   tableData: DigitizedItem[];
@@ -22,6 +24,15 @@ export const ItemTable = (props: ItemTableProps) => {
     return (item.type === MaterialType.PeriodicalBundle || item.type === MaterialType.NewspaperBundle) && (item.childItems?.length ?? 0) > 0;
   }
 
+  const getThumbIconForItem = (item: DigitizedItem): ReactElement => {
+    if (!isSupportedMaterialType(item.plineId ?? -1)) {
+      return <span className="font-light">N/A</span>
+    } else {
+      return itemIsFinished(item) ?
+        <LuThumbsUp size={24} className="text-blue-500"/> : <LuThumbsDown size={24} className="text-orange-500"/>
+    }
+  }
+
   return (
     <Table className="">
       <TableCaption>Søkeresultater</TableCaption>
@@ -31,7 +42,8 @@ export const ItemTable = (props: ItemTableProps) => {
           <TableHead>Navn</TableHead>
           <TableHead>DokID</TableHead>
           <TableHead>Materialtype</TableHead>
-          <TableHead>Kan sendes videre? </TableHead>
+          <TableHead className="text-center">Kan sendes videre?</TableHead>
+          <TableHead className="text-center">Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -42,36 +54,30 @@ export const ItemTable = (props: ItemTableProps) => {
                 <CollapsibleCell className="text-start">{item.searchId}</CollapsibleCell>
                 <CollapsibleCell className="text-start">{item.description}</CollapsibleCell>
                 <CollapsibleCell className="text-start">{getDokId(item.identifiers)}</CollapsibleCell>
-                <CollapsibleCell className="text-start">{item.type}</CollapsibleCell>
-                <CollapsibleCell className="text-start">{
-                  !isSupportedMaterialType(item?.plineId ?? -1) ? (
-                    <LuFile size={24} />
-                  ) : (
-                    itemIsFinished(item) ?
-                      <LuThumbsUp size={24} className="text-blue-500"/>
-                      : <LuThumbsDown size={24} className="text-orange-500"/>
-                  )
-                }</CollapsibleCell>
+                <CollapsibleCell className="text-start">{toProperCase(item.type?.toString())}</CollapsibleCell>
+                <CollapsibleCell className="text-center">{getThumbIconForItem(item)}</CollapsibleCell>
+                <CollapsibleCell className="text-center"> {toProperCase(item.status)}</CollapsibleCell>
               </TableRow>
-              <TableRow>
-                <TableCell colSpan={5} className="p-0">
-                  <CollapsibleContent asChild>
-                    <div className="px-10 py-5 rounded-xl border-zinc-500 border bg-opacity-15 w-full">
+              <TableRow className="border-0">
+                <TableCell colSpan={6} className="p-0">
+                  <CollapsibleContent asChild className="rounded-b-xl border-x border-b">
+                    <div className="px-10 py-5 bg-opacity-15 w-full">
                       <ProductionStatusDetails selectedObject={item}/>
                       {displayChildItems(item) && (
                         <div className="text-start px-10 py-5 rounded-xl border-zinc-500 border bg-accent/25 w-full">
                           <h1 className="text-lg">Hefter:</h1>
                           {item.childItems?.map((childItem, index) => (
-                            <Collapsible className="w-full my-1.5">
-                              <CollapsibleTrigger className="w-full rounded-xl border-zinc-500 bg-background border hover:bg-accent/50">
+                            <Collapsible key={index} className="w-full my-1.5">
+                              <CollapsibleTrigger className="w-full rounded-xl border-zinc-500 bg-background hover:bg-accent/50 shadow-md">
                                 <div className="flex flex-row justify-start gap-2.5 p-2.5 m-1 rounded-2xl">
                                   <p className="text-md">{childItem.description}</p>
                                   <p className="text-md">{childItem.status}</p>
+                                  {/*<p className="text-md">{getThumbIconForItem(childItem)}</p>*/}
                                 </div>
                               </CollapsibleTrigger>
                               <CollapsibleContent>
-                                <div className="rounded-2xl p-2 bg-background border-zinc-500 border-x-2 border-b-2" >
-                                  <ProductionStatusDetails selectedObject={childItem} key={index}/>
+                                <div className="rounded-b-xl p-2 bg-background shadow-md -translate-y-2.5">
+                                  <ProductionStatusDetails selectedObject={childItem} />
                                 </div>
                               </CollapsibleContent>
                             </Collapsible>

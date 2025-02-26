@@ -24,7 +24,6 @@ const searchItem = async (searchQuery: string): Promise<DigitizedItem | undefine
   return httpQuery.then(item => {
     if (item.id && (item.type === MaterialType.NewspaperBundle || item.type === MaterialType.PeriodicalBundle)) {
       return getRelatedItems(item.id).then(relatedItems => {
-        console.log("Related items:", relatedItems);
         item.childItems = relatedItems;
         return item;
       }).catch(err => {
@@ -53,6 +52,9 @@ const searchItem = async (searchQuery: string): Promise<DigitizedItem | undefine
         console.error(`Error fetching identifiers for ${item.id}:`, err);
         return item;
       });
+  }).catch(err => {
+    console.error('Error while fetching data: ', err);
+    return undefined;
   });
 };
 

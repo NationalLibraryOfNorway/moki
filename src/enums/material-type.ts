@@ -1,8 +1,8 @@
 export enum MaterialType {
   Book = 'Bok',
   PeriodicalBundle = 'perm_periodika',
-  Periodical = 'Periodika',
-  NewspaperBundle = 'Perm avis',
+  Periodical = 'periodika',
+  NewspaperBundle = 'Perm_aviser',
   Newspaper = 'Avis',
   Manuscript = 'Manuskript',
   Other = 'Annet',

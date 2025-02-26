@@ -4,7 +4,7 @@ import {DigitizedItem} from "@/models/digitized-item.ts";
 import {ItemEvent} from "@/models/item-event.ts";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import {LuCheck, LuHourglass, LuX} from "react-icons/lu";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip.tsx";
+import {Tooltip} from "@/components/features/tooltip.tsx";
 
 interface ProductionStatusDetailsProps {
   selectedObject: DigitizedItem;
@@ -27,29 +27,14 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
   };
 
   const statusToIcon = (status: string): ReactElement => {
-    const getIcon = (status: string): ReactElement => {
-      switch (status.toLowerCase()) {
-      case 'done':
-        return <LuCheck size={24} className="text-blue-500" />;
-      case 'failed':
-        return <LuX size={24} className="text-orange-500" />;
-      default:
-        return <LuHourglass size={24} />;
-      }
-    };
-
-    return (
-      <TooltipProvider>
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger>
-            {getIcon(status)}
-          </TooltipTrigger>
-          <TooltipContent side="right">
-            {status}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
+    switch (status.toLowerCase()) {
+    case 'done':
+      return <Tooltip trigger={<LuCheck size={24} className="text-blue-500"/> } description={status} />;
+    case 'failed':
+      return <LuX size={24} className="text-orange-500" />;
+    default:
+      return <LuHourglass size={24} />;
+    }
   };
 
   return (
