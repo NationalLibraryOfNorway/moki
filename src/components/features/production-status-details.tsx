@@ -3,8 +3,9 @@ import {getEventsById} from "@/services/production-data.ts";
 import {DigitizedItem} from "@/models/digitized-item.ts";
 import {ItemEvent} from "@/models/item-event.ts";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-import {LuCheck, LuHourglass, LuX} from "react-icons/lu";
+import {LuCheck, LuExternalLink, LuHourglass, LuX} from "react-icons/lu";
 import {Tooltip} from "@/components/features/tooltip.tsx";
+import {Button} from "@/components/ui/button.tsx";
 
 interface ProductionStatusDetailsProps {
   selectedObject: DigitizedItem;
@@ -12,6 +13,8 @@ interface ProductionStatusDetailsProps {
 
 export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => {
   const [events, setEvents] = useState<ItemEvent[]>([]);
+
+  const relationUrl = import.meta.env.VITE_RELATION_URL;
 
   useEffect(() => {
     if (!props.selectedObject.id) return;
@@ -37,32 +40,54 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
     }
   };
 
+  const isDigitizedPeriodical = (productionLineId: number): boolean => {
+    return productionLineId === 26 || // Demonteringsskanning v2 (Flere hefter)
+      productionLineId === 27 ||      // POS og V-form skanning v2 (1) (Return m/omslag)
+      productionLineId === 28 ||      // POS og demonteringsskanning v2 (Kassering m/omslag)
+      productionLineId === 37;        // Tidsskrift - Komplett (Enkelthefte)
+  }
+
   return (
-    <Table className="">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-start">Type</TableHead>
-          <TableHead className="text-start">Status</TableHead>
-          <TableHead className="text-start">Melding</TableHead>
-          <TableHead className="text-start">Started</TableHead>
-          <TableHead className="text-start">Startet av</TableHead>
-          <TableHead className="text-start">Fullført</TableHead>
-          <TableHead className="text-start">Fullført av</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {events.map((event, index) => (
-          <TableRow key={index}>
-            <TableCell className="text-start">{event.type}</TableCell>
-            <TableCell className="text-start">{statusToIcon(event.status ?? '')}</TableCell>
-            <TableCell className="text-start">{event.statusText}</TableCell>
-            <TableCell className="text-start">{formatDateString(event.started)}</TableCell>
-            <TableCell className="text-start">{event.startedBy}</TableCell>
-            <TableCell className="text-start">{formatDateString(event.completed)}</TableCell>
-            <TableCell className="text-start">{event.completedBy}</TableCell>
+    <div className="text-start">
+      <div className="flex justify-start gap-2.5 mb-5">
+        {isDigitizedPeriodical(props.selectedObject.plineId ?? -1) && (
+          <a href={`${relationUrl}/periodicals/issue/${props.selectedObject.id}`} target="_blank" rel="noreferrer">
+            <Button variant="outline">Se i Relation <LuExternalLink /></Button>
+          </a>
+        )}
+        {props.selectedObject.status === 'AddToSearchIndex.done' && (
+          <a href={`https://urn.nb.no/URN:NBN:no-nb_${props.selectedObject.description}`} target="_blank" rel="noreferrer">
+            <Button variant="outline">Se i nettbiblioteket<LuExternalLink /></Button>
+          </a>
+        )}
+      </div>
+      <Table className="">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-start">Type</TableHead>
+            <TableHead className="text-start">Status</TableHead>
+            <TableHead className="text-start">Melding</TableHead>
+            <TableHead className="text-start">Started</TableHead>
+            <TableHead className="text-start">Startet av</TableHead>
+            <TableHead className="text-start">Fullført</TableHead>
+            <TableHead className="text-start">Fullført av</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {events.map((event, index) => (
+            <TableRow key={index}>
+              <TableCell className="text-start">{event.type}</TableCell>
+              <TableCell className="text-start">{statusToIcon(event.status ?? '')}</TableCell>
+              <TableCell className="text-start">{event.statusText}</TableCell>
+              <TableCell className="text-start">{formatDateString(event.started)}</TableCell>
+              <TableCell className="text-start">{event.startedBy}</TableCell>
+              <TableCell className="text-start">{formatDateString(event.completed)}</TableCell>
+              <TableCell className="text-start">{event.completedBy}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+
   )
 };

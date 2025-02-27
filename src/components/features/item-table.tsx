@@ -72,11 +72,11 @@ export const ItemTable = (props: ItemTableProps) => {
                                 <div className="flex flex-row justify-start gap-2.5 p-2.5 m-1 rounded-2xl">
                                   <p className="text-md">{childItem.description}</p>
                                   <p className="text-md">{childItem.status}</p>
-                                  {/*<p className="text-md">{getThumbIconForItem(childItem)}</p>*/}
+                                  <p className="text-md">{getThumbIconForItem(childItem)}</p>
                                 </div>
                               </CollapsibleTrigger>
                               <CollapsibleContent>
-                                <div className="rounded-b-xl p-2 bg-background shadow-md -translate-y-2.5">
+                                <div className="rounded-b-xl p-2 px- bg-background shadow-md -translate-y-2.5">
                                   <ProductionStatusDetails selectedObject={childItem} />
                                 </div>
                               </CollapsibleContent>
