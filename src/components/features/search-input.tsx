@@ -7,7 +7,6 @@ interface SearchInputProps {
   searchInputValue: string;
   setSearchInputValue: (value: string) => void;
   setSearchResults: (results: DigitizedItem[]) => void;
-  notFoundIds: string[];
   setNotFoundIds: (ids: string[]) => void;
 }
 
@@ -18,12 +17,14 @@ export const SearchInput = (props: SearchInputProps) => {
     const searchInputs = props.searchInputValue.split('\n').map(s => s.trim());
     const uniqueSearchInputs = Array.from(new Set(searchInputs));
     const tempData: DigitizedItem[] = [];
+    const tempNotFoundIds: string[] = [];
+
     Promise.all(uniqueSearchInputs.filter(Boolean).map(async searchTerm => {
       const normalizedSearchTerm = normalizeName(searchTerm);
       const item = await searchItem(normalizedSearchTerm);
       if (!item) {
         console.error(`Item ${normalizedSearchTerm} not found`);
-        props.setNotFoundIds([...props.notFoundIds, normalizedSearchTerm]);
+        tempNotFoundIds.push(normalizedSearchTerm);
       } else {
         tempData.push({...item, searchId: searchTerm});
       }
@@ -35,9 +36,19 @@ export const SearchInput = (props: SearchInputProps) => {
         return uniqueSearchInputs.indexOf(a.searchId) - uniqueSearchInputs.indexOf(b.searchId)
       });
       props.setSearchResults(sortedData);
+      handleNotFoundId(tempNotFoundIds);
     }).catch(err => {
       console.error('Error while fetching data: ', err)
     });
+  }
+
+  const handleNotFoundId = (id: string[]) => {
+    if (id.length === 0) {
+      props.setNotFoundIds([]);
+      return;
+    }
+    const uniqueIds = Array.from(new Set([...id]));
+    props.setNotFoundIds(uniqueIds);
   }
 
   const normalizeName = (description: string): string => {
@@ -67,7 +78,7 @@ export const SearchInput = (props: SearchInputProps) => {
           }
         }}
       />
-     <Button className="rounded-2xl" onClick={searchItems}>Søk</Button>
+      <Button className="rounded-2xl" onClick={searchItems}>Søk</Button>
     </>
 
   )

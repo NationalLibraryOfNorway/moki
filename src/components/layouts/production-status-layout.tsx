@@ -9,15 +9,6 @@ export default function ProductionStatusLayout() {
   const [searchResults, setSearchResults] = useState<DigitizedItem[]>([]);
   const [notFoundIds, setNotFoundIds] = useState<string[]>([]);
 
-  const handleNotFoundId = (id: string[]) => {
-    if (id.length === 0) {
-      setNotFoundIds([]);
-      return;
-    }
-    const uniqueIds = Array.from(new Set([...notFoundIds, ...id]));
-    setNotFoundIds(uniqueIds);
-  }
-
   return (
     <div className="rounded-md w-full mx-auto">
       <div className="flex flex-col items-start my-5">
@@ -29,8 +20,7 @@ export default function ProductionStatusLayout() {
           searchInputValue={searchInputValue}
           setSearchInputValue={setSearchInputValue}
           setSearchResults={setSearchResults}
-          setNotFoundIds={handleNotFoundId}
-          notFoundIds={notFoundIds}
+          setNotFoundIds={setNotFoundIds}
         />
       </div>
       { notFoundIds.length > 0 && (
@@ -43,7 +33,7 @@ export default function ProductionStatusLayout() {
               ))}
             </ul>
           }
-          type="warning"/>
+        />
       )}
       <div className="w-full mx-3.5">
         { searchResults.length > 0 && (
