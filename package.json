@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:stage": "next build",
+    "build:prod": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:ci": "echo \"Tests not yet implemented.\""
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.3",
