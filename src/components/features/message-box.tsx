@@ -1,9 +1,9 @@
 import {ReactNode} from "react";
 
 interface MessageBoxProps {
-    title: string;
-    body: ReactNode | string;
-    className?: string;
+  title: string;
+  body: ReactNode | string;
+  className?: string;
 }
 
 export const MessageBox = (props: MessageBoxProps) => {
