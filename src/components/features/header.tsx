@@ -1,15 +1,7 @@
-import {Button} from "@/components/ui/button.tsx";
-import {LuMoon, LuSun} from "react-icons/lu";
-import {useTheme} from "@/components/features/theme-provider.tsx";
-import {HelpDialog} from "@/components/features/help-dialog.tsx";
-
+import {HelpDialog} from "@/components/features/help-dialog";
+import ThemeToggler from "@/components/features/theme-toggler";
 
 export default function Header() {
-  const {theme, setTheme} = useTheme();
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }
 
   return (
     <>
@@ -22,12 +14,7 @@ export default function Header() {
             <nav>
               <ul className="flex space-x-4">
                 <li className="flex space-x-2">
-                  <Button
-                    variant="ghost"
-                    onClick={toggleTheme}
-                    className="rounded-full w-10 h-10 flex items-center justify-center">
-                    {theme === 'dark' ? <LuSun style={{ width: '24px', height: '24px' }} /> : <LuMoon style={{ width: '24px', height: '24px' }} />}
-                  </Button>
+                  <ThemeToggler />
                   <HelpDialog
                     title="Brukerveiledning for Moki"
                     body={

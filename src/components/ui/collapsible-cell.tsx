@@ -1,5 +1,5 @@
-import {CollapsibleTrigger} from "@/components/ui/collapsible.tsx";
-import {TableCell} from "@/components/ui/table.tsx";
+import {CollapsibleTrigger} from "@/components/ui/collapsible";
+import {TableCell} from "@/components/ui/table";
 import {ReactNode} from "react";
 
 export const CollapsibleCell = ({children, className, ...props}: { children: ReactNode, className?: string }) => {

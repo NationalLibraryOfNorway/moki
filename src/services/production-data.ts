@@ -1,10 +1,12 @@
-import {DigitizedItem} from "@/models/digitized-item.ts";
-import {ItemEvent} from "@/models/item-event.ts";
-import {ItemIdentifier} from "@/models/item-identifier.ts";
-import {MaterialType} from "@/enums/material-type.ts";
+import {DigitizedItem} from "@/models/digitized-item";
+import {ItemEvent} from "@/models/item-event";
+import {ItemIdentifier} from "@/models/item-identifier";
+import {MaterialType} from "@/enums/material-type";
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_PATH;
 
 const fetchGet = async (url: string): Promise<Response> => {
-  return fetch(url, {
+  return fetch(`${baseUrl}${url}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'

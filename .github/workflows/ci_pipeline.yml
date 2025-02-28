@@ -3,12 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - "**"
-    tags:
-      - "v*.*.*"
-  pull_request:
-    branches:
-      - "main"
+      - "never"
 
 env:
   APP_VERSION: ${{ github.ref_name }}
@@ -31,7 +26,7 @@ jobs:
         run: npm install
 
       - name: Build application
-        run: npm run build:production
+        run: npm run build
 
       - name: Compress build output
         run: tar czvf dist.tar.gz dist/
@@ -39,7 +34,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: angular-build
+          name: vite-react-build
           path: dist.tar.gz
 
 
@@ -57,7 +52,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: angular-build
+          name: vite-react-build
           path: ./artifacts
 
       - name: Extract build artifact

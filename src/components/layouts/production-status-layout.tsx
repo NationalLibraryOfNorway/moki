@@ -1,8 +1,10 @@
+'use client';
+
 import {useState} from "react";
-import {DigitizedItem} from "@/models/digitized-item.ts";
-import {ItemTable} from "@/components/features/item-table.tsx";
-import {SearchInput} from "@/components/features/search-input.tsx";
-import {MessageBox} from "@/components/features/message-box.tsx";
+import {DigitizedItem} from "@/models/digitized-item";
+import {ItemTable} from "@/components/features/item-table";
+import {SearchInput} from "@/components/features/search-input";
+import {MessageBox} from "@/components/features/message-box";
 
 export default function ProductionStatusLayout() {
   const [searchInputValue, setSearchInputValue] = useState<string>('');
@@ -38,7 +40,10 @@ export default function ProductionStatusLayout() {
       )}
       <div className="w-full mx-3.5">
         { searchResults.length > 0 && (
-          <ItemTable tableData={searchResults}/>
+          <>
+            <ItemTable tableData={searchResults}/>
+          </>
+
         )}
       </div>
     </div>

@@ -1,7 +1,8 @@
-import {Textarea} from "@/components/ui/textarea.tsx";
-import {DigitizedItem} from "@/models/digitized-item.ts";
-import {searchItem} from "@/services/production-data.ts";
-import {Button} from "@/components/ui/button.tsx";
+import {Textarea} from "@/components/ui/textarea";
+import {DigitizedItem} from "@/models/digitized-item";
+import {searchItem} from "@/services/production-data";
+import {Button} from "@/components/ui/button";
+import {FaMagnifyingGlass} from "react-icons/fa6";
 
 interface SearchInputProps {
   searchInputValue: string;
@@ -78,7 +79,7 @@ export const SearchInput = (props: SearchInputProps) => {
           }
         }}
       />
-      <Button className="rounded-2xl" onClick={searchItems}>Søk</Button>
+      <Button className="rounded-2xl" onClick={searchItems}><FaMagnifyingGlass/>Søk</Button>
     </>
 
   )

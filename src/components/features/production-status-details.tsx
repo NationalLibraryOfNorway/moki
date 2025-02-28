@@ -1,11 +1,13 @@
+'use client';
+
 import {ReactElement, useEffect, useState} from "react";
-import {getEventsById} from "@/services/production-data.ts";
-import {DigitizedItem} from "@/models/digitized-item.ts";
-import {ItemEvent} from "@/models/item-event.ts";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
+import {getEventsById} from "@/services/production-data";
+import {DigitizedItem} from "@/models/digitized-item";
+import {ItemEvent} from "@/models/item-event";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {LuCheck, LuExternalLink, LuHourglass, LuX} from "react-icons/lu";
-import {Tooltip} from "@/components/features/tooltip.tsx";
-import {Button} from "@/components/ui/button.tsx";
+import {Tooltip} from "@/components/features/tooltip";
+import {Button} from "@/components/ui/button";
 
 interface ProductionStatusDetailsProps {
   selectedObject: DigitizedItem;
@@ -14,7 +16,7 @@ interface ProductionStatusDetailsProps {
 export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => {
   const [events, setEvents] = useState<ItemEvent[]>([]);
 
-  const relationUrl = import.meta.env.VITE_RELATION_URL;
+  const relationUrl = process.env.NEXT_PUBLIC_RELATION_URL;
 
   useEffect(() => {
     if (!props.selectedObject.id) return;

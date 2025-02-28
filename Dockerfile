@@ -1,17 +1,17 @@
-FROM nginx:1.27.0-alpine
+FROM node:20.17.0-alpine AS base
 
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
+WORKDIR /app
 
-ENV HTTP_PROXY=$HTTP_PROXY
-ENV HTTPS_PROXY=$HTTPS_PROXY
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-COPY dist/moki/browser /usr/share/nginx/html/moki
-COPY nginx /opt
-RUN rm /etc/nginx/conf.d/default.conf
+COPY --chown=nextjs:nodejs .next/standalone ./
+COPY --chown=nextjs:nodejs .next/static ./.next/static
 
-RUN apk add --no-cache bash
+USER nextjs
 
-EXPOSE 80
+EXPOSE 3000
 
-CMD /bin/bash -c "bash /opt/inject-env.sh /opt/nginx.conf /etc/nginx/conf.d/nginx.conf && exec nginx -g 'daemon off;'"
+ENV PORT=3000
+
+CMD HOSTNAME="0.0.0.0" node server.js

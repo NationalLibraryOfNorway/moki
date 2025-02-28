@@ -1,6 +1,6 @@
-import {ItemIdentifier} from "@/models/item-identifier.ts";
-import {ItemEvent} from "@/models/item-event.ts";
-import {MaterialType} from "@/enums/material-type.ts";
+import {ItemIdentifier} from "@/models/item-identifier";
+import {ItemEvent} from "@/models/item-event";
+import {MaterialType} from "@/enums/material-type";
 
 export class DigitizedItem {
   id?: number;
