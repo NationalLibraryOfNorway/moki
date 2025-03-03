@@ -11,7 +11,7 @@ export const HelpDialog = (props: HelpDialogProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="rounded-full w-10 h-10 flex items-center justify-center hover:bg-accent">
+      <DialogTrigger className="rounded-full w-10 h-10 flex items-center justify-center hover:bg-accent hover:cursor-pointer">
         <LuCircleHelp style={{ width: '24px', height: '24px' }}  />
       </DialogTrigger>
       <DialogContent className="max-h-dvh overflow-y-scroll">

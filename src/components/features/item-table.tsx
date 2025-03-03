@@ -51,12 +51,12 @@ export const ItemTable = (props: ItemTableProps) => {
           <Collapsible key={index} asChild>
             <>
               <TableRow className="hover:bg-muted/50">
-                <CollapsibleCell className="text-start">{item.searchId}</CollapsibleCell>
-                <CollapsibleCell className="text-start">{item.description}</CollapsibleCell>
-                <CollapsibleCell className="text-start">{getDokId(item.identifiers)}</CollapsibleCell>
-                <CollapsibleCell className="text-start">{toProperCase(item.type?.toString())}</CollapsibleCell>
-                <CollapsibleCell className="text-center">{getThumbIconForItem(item)}</CollapsibleCell>
-                <CollapsibleCell className="text-center"> {item.status}</CollapsibleCell>
+                <CollapsibleCell className="text-start hover:cursor-pointer">{item.searchId}</CollapsibleCell>
+                <CollapsibleCell className="text-start hover:cursor-pointer">{item.description}</CollapsibleCell>
+                <CollapsibleCell className="text-start hover:cursor-pointer">{getDokId(item.identifiers)}</CollapsibleCell>
+                <CollapsibleCell className="text-start hover:cursor-pointer">{toProperCase(item.type?.toString())}</CollapsibleCell>
+                <CollapsibleCell className="text-cente hover:cursor-pointerr">{getThumbIconForItem(item)}</CollapsibleCell>
+                <CollapsibleCell className="text-cente hover:cursor-pointerr"> {item.status}</CollapsibleCell>
               </TableRow>
               <TableRow className="border-0">
                 <TableCell colSpan={6} className="p-0">
@@ -68,7 +68,7 @@ export const ItemTable = (props: ItemTableProps) => {
                           <h1 className="text-lg">Hefter:</h1>
                           {item.childItems?.map((childItem, index) => (
                             <Collapsible key={index} className="w-full my-1.5">
-                              <CollapsibleTrigger className="w-full rounded-xl border-zinc-500 bg-white dark:bg-accent hover:bg-accent/50 shadow-md">
+                              <CollapsibleTrigger className="w-full rounded-xl border-zinc-500 bg-white dark:bg-accent hover:bg-accent/50 hover:cursor-pointer shadow-md">
                                 <div className="flex flex-row justify-start gap-2.5 p-2.5 m-1 rounded-2xl">
                                   <p className="text-md">{childItem.description}</p>
                                   <p className="text-md">{childItem.status}</p>
