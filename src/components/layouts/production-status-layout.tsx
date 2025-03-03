@@ -27,7 +27,7 @@ export default function ProductionStatusLayout() {
       </div>
       { notFoundIds.length > 0 && (
         <MessageBox
-          className="bg-orange-200 border-orange-400"
+          className="bg-orange-200/50 border-orange-400"
           title="Fant ingen objekter på følgende IDer:"
           body={
             <ul>

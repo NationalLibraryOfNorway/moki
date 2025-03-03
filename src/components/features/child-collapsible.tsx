@@ -9,9 +9,14 @@ import {ItemIdentifier} from "@/models/item-identifier";
 import {MaterialType} from "@/enums/material-type";
 import {isSupportedMaterialType, itemIsFinished} from "@/services/production-data";
 import {LuThumbsDown, LuThumbsUp} from "react-icons/lu";
+import {IconType} from "react-icons";
+
+interface ChildCollapsibleProps {
+  item: DigitizedItem;
+}
 
 export const ChildCollapsible = (
-  {item}: {item: DigitizedItem}
+  {item}: ChildCollapsibleProps
 ) => {
   const getDokId = (identifiers?: ItemIdentifier[]): string | undefined => {
     if (!identifiers) return undefined;
@@ -22,7 +27,7 @@ export const ChildCollapsible = (
     return (item.type === MaterialType.PeriodicalBundle || item.type === MaterialType.NewspaperBundle) && (item.childItems?.length ?? 0) > 0;
   }
 
-  const getThumbIconForItem = (item: DigitizedItem): ReactElement => {
+  const getThumbIconForItem = (item: DigitizedItem): ReactElement<HTMLSpanElement | IconType> => {
     if (!isSupportedMaterialType(item.plineId ?? -1)) {
       return <span className="font-light">N/A</span>
     } else {
@@ -33,18 +38,18 @@ export const ChildCollapsible = (
 
   return (
     <>
-      <TableRow className="hover:bg-muted/50 hover:cursor-pointer">
-        <CollapsibleCell className="text-start hover:cursor-pointer">{item.searchId}</CollapsibleCell>
-        <CollapsibleCell className="text-start hover:cursor-pointer">{item.description}</CollapsibleCell>
-        <CollapsibleCell className="text-start hover:cursor-pointer">{getDokId(item.identifiers)}</CollapsibleCell>
-        <CollapsibleCell className="text-start hover:cursor-pointer">{toProperCase(item.type?.toString())}</CollapsibleCell>
-        <CollapsibleCell className="text-cente hover:cursor-pointer">{getThumbIconForItem(item)}</CollapsibleCell>
-        <CollapsibleCell className="text-cente hover:cursor-pointer"> {item.status}</CollapsibleCell>
+      <TableRow className="hover:bg-muted/50">
+        <CollapsibleCell className="text-start">{item.searchId}</CollapsibleCell>
+        <CollapsibleCell className="text-start">{item.description}</CollapsibleCell>
+        <CollapsibleCell className="text-start">{getDokId(item.identifiers)}</CollapsibleCell>
+        <CollapsibleCell className="text-start">{toProperCase(item.type?.toString())}</CollapsibleCell>
+        <CollapsibleCell className="text-cente">{getThumbIconForItem(item)}</CollapsibleCell>
+        <CollapsibleCell className="text-cente"> {item.status}</CollapsibleCell>
       </TableRow>
       <TableRow className="border-0">
         <TableCell colSpan={6} className="p-0">
           <CollapsibleContent asChild className="rounded-b-xl border-x border-b">
-            <div className="px-10 py-5  w-full">
+            <div className="px-10 py-5 w-full">
               <ProductionStatusDetails selectedObject={item}/>
               {displayChildItems(item) && (
                 <div className="text-start px-10 py-5 rounded-xl border-zinc-500 border bg-accent/20 w-full">

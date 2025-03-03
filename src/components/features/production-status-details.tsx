@@ -31,7 +31,7 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
     return date.toISOString().slice(0, 19).replace('T', ' ');
   };
 
-  const statusToIcon = (status: string): ReactElement => {
+  const statusToIcon = (status: string): ReactElement<any> => {
     switch (status.toLowerCase()) {
     case 'done':
       return <Tooltip trigger={<LuCheck size={24} className="text-blue-500"/> } description={status} />;
