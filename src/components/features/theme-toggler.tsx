@@ -23,7 +23,7 @@ export default function ThemeToggler() {
     <Button
       variant="ghost"
       onClick={() => {setTheme(theme === 'dark' ? 'light' : 'dark')}}
-      className="rounded-full w-10 h-10 flex items-center justify-center">
+      className="rounded-full size-10 flex items-center justify-center">
       {theme === 'dark' ? <LuSun style={{ width: '24px', height: '24px' }} /> : <LuMoon style={{ width: '24px', height: '24px' }} />}
     </Button>
   );
