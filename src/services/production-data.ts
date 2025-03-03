@@ -6,12 +6,16 @@ import {MaterialType} from "@/enums/material-type";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_PATH;
 
 const fetchGet = async (url: string): Promise<Response> => {
-  return fetch(`${baseUrl}${url}`, {
+  const response = await fetch(`${baseUrl}${url}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     }
   });
+  if (!response.ok) {
+    throw new Error(`${response.status}: ${response.statusText}`);
+  }
+  return response;
 };
 
 const searchItem = async (searchQuery: string): Promise<DigitizedItem | undefined> => {

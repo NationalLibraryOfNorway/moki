@@ -63,7 +63,7 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
           </a>
         )}
       </div>
-      <Table className="">
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="text-start">Type</TableHead>
