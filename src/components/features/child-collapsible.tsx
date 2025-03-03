@@ -43,8 +43,8 @@ export const ChildCollapsible = (
         <CollapsibleCell className="text-start">{item.description}</CollapsibleCell>
         <CollapsibleCell className="text-start">{getDokId(item.identifiers)}</CollapsibleCell>
         <CollapsibleCell className="text-start">{toProperCase(item.type?.toString())}</CollapsibleCell>
-        <CollapsibleCell className="text-cente">{getThumbIconForItem(item)}</CollapsibleCell>
-        <CollapsibleCell className="text-cente"> {item.status}</CollapsibleCell>
+        <CollapsibleCell className="text-center">{getThumbIconForItem(item)}</CollapsibleCell>
+        <CollapsibleCell className="text-center"> {item.status}</CollapsibleCell>
       </TableRow>
       <TableRow className="border-0">
         <TableCell colSpan={6} className="p-0">
@@ -56,8 +56,8 @@ export const ChildCollapsible = (
                   <h1 className="text-lg">Hefter:</h1>
                   {item.childItems?.map((childItem, index) => (
                     <Collapsible key={index} className="w-full my-1.5">
-                      <CollapsibleTrigger className="w-full rounded-xl border-zinc-500 bg-white dark:bg-accent hover:cursor-pointer shadow-md">
-                        <div className="flex flex-row justify-start gap-2.5 p-2.5 m-1 rounded-2xl">
+                      <CollapsibleTrigger className="w-full rounded-xl border-zinc-500 bg-white dark:bg-accent hover:cursor-pointer hover:bg-muted/50 shadow-md">
+                        <div className="flex flex-row justify-start gap-2.5 p-2.5 m-1 rounded-2xl ">
                           <p className="text-md">{childItem.description}</p>
                           <p className="text-md">{childItem.status}</p>
                           <p className="text-md">{getThumbIconForItem(childItem)}</p>

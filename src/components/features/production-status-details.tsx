@@ -1,6 +1,6 @@
 'use client';
 
-import {ReactElement, useEffect, useState} from "react";
+import {JSX, ReactElement, useEffect, useState} from "react";
 import {getEventsById} from "@/services/production-data";
 import {DigitizedItem} from "@/models/digitized-item";
 import {ItemEvent} from "@/models/item-event";
@@ -8,6 +8,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {LuCheck, LuExternalLink, LuHourglass, LuX} from "react-icons/lu";
 import {Tooltip} from "@/components/features/tooltip";
 import {Button} from "@/components/ui/button";
+import {IconType} from "react-icons";
 
 interface ProductionStatusDetailsProps {
   selectedObject: DigitizedItem;
@@ -31,7 +32,7 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
     return date.toISOString().slice(0, 19).replace('T', ' ');
   };
 
-  const statusToIcon = (status: string): ReactElement<any> => {
+  const statusToIcon = (status: string): JSX.Element | ReactElement<IconType> => {
     switch (status.toLowerCase()) {
     case 'done':
       return <Tooltip trigger={<LuCheck size={24} className="text-blue-500"/> } description={status} />;
