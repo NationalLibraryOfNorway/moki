@@ -1,7 +1,7 @@
 import {ReactElement} from "react";
-import {TableCell, TableRow} from "@/components/ui/table";
+import {TableCell, TableRow} from "@/components/ui/shadcn/table";
 import {toProperCase} from "@/lib/string-utils";
-import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
+import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/shadcn/collapsible";
 import {ProductionStatusDetails} from "@/components/features/production-status-details";
 import {DigitizedItem} from "@/models/digitized-item";
 import {ItemIdentifier} from "@/models/item-identifier";

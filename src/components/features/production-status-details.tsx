@@ -4,10 +4,10 @@ import {JSX, ReactElement, useEffect, useState} from "react";
 import {getEventsById} from "@/services/production-data";
 import {DigitizedItem} from "@/models/digitized-item";
 import {ItemEvent} from "@/models/item-event";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/shadcn/table";
 import {LuCheck, LuExternalLink, LuHourglass, LuX} from "react-icons/lu";
 import {Tooltip} from "@/components/features/tooltip";
-import {Button} from "@/components/ui/button";
+import {Button} from "@/components/ui/shadcn/button";
 import {IconType} from "react-icons";
 
 interface ProductionStatusDetailsProps {

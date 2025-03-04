@@ -1,7 +1,7 @@
-import {Textarea} from "@/components/ui/textarea";
+import {Textarea} from "@/components/ui/shadcn/textarea";
 import {DigitizedItem} from "@/models/digitized-item";
 import {searchItem} from "@/services/production-data";
-import {Button} from "@/components/ui/button";
+import {Button} from "@/components/ui/shadcn/button";
 import {FaMagnifyingGlass} from "react-icons/fa6";
 
 interface SearchInputProps {
