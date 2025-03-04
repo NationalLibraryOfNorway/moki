@@ -22,7 +22,7 @@ export const ItemTable = (props: ItemTableProps) => {
           <TableHead className="text-center">Status</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody >
+      <TableBody>
         { props.tableData.map((item, index) => (
           <Collapsible key={index} asChild>
             <ChildCollapsible item={item} />

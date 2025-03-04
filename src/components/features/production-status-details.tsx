@@ -67,7 +67,7 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
         <TableHeader>
           <TableRow>
             <TableHead className="text-start">Type</TableHead>
-            <TableHead className="text-start">Status</TableHead>
+            <TableHead className="text-start max-w-xs">Status</TableHead>
             <TableHead className="text-start">Melding</TableHead>
             <TableHead className="text-start">Started</TableHead>
             <TableHead className="text-start">Startet av</TableHead>
@@ -80,7 +80,7 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
             <TableRow key={index}>
               <TableCell className="text-start">{event.type}</TableCell>
               <TableCell className="text-start">{statusToIcon(event.status ?? '')}</TableCell>
-              <TableCell className="text-start">{event.statusText}</TableCell>
+              <TableCell className="text-start max-w-xs break-words whitespace-normal">{event.statusText}</TableCell>
               <TableCell className="text-start">{formatDateString(event.started)}</TableCell>
               <TableCell className="text-start">{event.startedBy}</TableCell>
               <TableCell className="text-start">{formatDateString(event.completed)}</TableCell>
