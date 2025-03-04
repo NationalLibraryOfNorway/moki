@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: moki-deployment
+  name: moki
   labels:
     app: moki
   namespace: tekst-stage
@@ -17,13 +17,10 @@ spec:
     spec:
       containers:
         - name: moki
-          image: <image>
+          image: <harbor_url>/tekst/moki:<version>
           ports:
             - name: app-port
-              containerPort: 4200
-          env:
-            - name: API_HOST_URL
-              value: <api_host_url>
+              containerPort: 3000
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -41,6 +38,20 @@ spec:
             periodSeconds: 15
             failureThreshold: 3
             timeoutSeconds: 1
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: moki-service
+spec:
+  ports:
+    - port: 80
+      name: gui
+      targetPort: 3000
+  selector:
+    app: moki
+  type: ClusterIP
 
 ---
 
@@ -62,18 +73,3 @@ spec:
                 name: moki-service
                 port:
                   number: 80
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: moki-service
-spec:
-  ports:
-    - port: 4200
-      name: gui
-      targetPort: 80
-  selector:
-    app: moki
-  type: ClusterIP
