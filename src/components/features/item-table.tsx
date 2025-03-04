@@ -25,9 +25,9 @@ export const ItemTable = (props: ItemTableProps) => {
       <TableBody >
         { props.tableData.map((item, index) => (
           <Collapsible key={index} asChild>
-            <CollapsibleTrigger asChild>
-              <ChildCollapsible item={item} />
-            </CollapsibleTrigger>
+            <ChildCollapsible item={item} />
+            {/*<CollapsibleTrigger asChild>*/}
+            {/*</CollapsibleTrigger>*/}
           </Collapsible>
         ))}
       </TableBody>

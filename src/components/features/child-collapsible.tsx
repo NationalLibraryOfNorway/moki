@@ -1,6 +1,5 @@
 import {ReactElement} from "react";
 import {TableCell, TableRow} from "@/components/ui/table";
-import {CollapsibleCell} from "@/components/ui/collapsible-cell";
 import {toProperCase} from "@/lib/string-utils";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
 import {ProductionStatusDetails} from "@/components/features/production-status-details";
@@ -38,14 +37,16 @@ export const ChildCollapsible = (
 
   return (
     <>
-      <TableRow className="hover:bg-muted/50">
-        <CollapsibleCell className="text-start">{item.searchId}</CollapsibleCell>
-        <CollapsibleCell className="text-start">{item.description}</CollapsibleCell>
-        <CollapsibleCell className="text-start">{getDokId(item.identifiers)}</CollapsibleCell>
-        <CollapsibleCell className="text-start">{toProperCase(item.type?.toString())}</CollapsibleCell>
-        <CollapsibleCell className="text-center">{getThumbIconForItem(item)}</CollapsibleCell>
-        <CollapsibleCell className="text-center"> {item.status}</CollapsibleCell>
-      </TableRow>
+      <CollapsibleTrigger asChild>
+        <TableRow className="hover:bg-muted/50">
+          <TableCell className="text-start">{item.searchId}</TableCell>
+          <TableCell className="text-start">{item.description}</TableCell>
+          <TableCell className="text-start">{getDokId(item.identifiers)}</TableCell>
+          <TableCell className="text-start">{toProperCase(item.type?.toString())}</TableCell>
+          <TableCell className="text-center">{getThumbIconForItem(item)}</TableCell>
+          <TableCell className="text-center"> {item.status}</TableCell>
+        </TableRow>
+      </CollapsibleTrigger>
       <TableRow className="border-0">
         <TableCell colSpan={6} className="p-0">
           <CollapsibleContent asChild className="rounded-b-xl border-x border-b">
