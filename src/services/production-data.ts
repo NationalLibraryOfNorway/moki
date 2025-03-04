@@ -6,7 +6,7 @@ import {MaterialType} from "@/enums/material-type";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_PATH;
 
 const fetchGet = async (url: string): Promise<Response> => {
-  const response = await fetch(`${baseUrl}${url}`, {
+  const response = await fetch(`${baseUrl}/api/production/proddb${url}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -22,9 +22,9 @@ const searchItem = async (searchQuery: string): Promise<DigitizedItem | undefine
   let httpQuery: Promise<DigitizedItem>;
 
   if (isValidBarcode(searchQuery)) {
-    httpQuery = fetchGet(`/api/proddb/barcode/${searchQuery}`).then(response => response.json() as Promise<DigitizedItem>);
+    httpQuery = fetchGet(`/barcode/${searchQuery}`).then(response => response.json() as Promise<DigitizedItem>);
   } else {
-    httpQuery = fetchGet(`/api/proddb/${searchQuery}`).then(response => response.json() as Promise<DigitizedItem>);
+    httpQuery = fetchGet(`/${searchQuery}`).then(response => response.json() as Promise<DigitizedItem>);
   }
 
   return httpQuery.then(item => {
@@ -65,7 +65,7 @@ const searchItem = async (searchQuery: string): Promise<DigitizedItem | undefine
 };
 
 const getEventsById = async (id: number): Promise<ItemEvent[]> => {
-  return fetchGet(`/api/proddb/${id}/events`).then(response => response.json() as Promise<ItemEvent[]>)
+  return fetchGet(`/${id}/events`).then(response => response.json() as Promise<ItemEvent[]>)
     .then(items => items.sort((a, b) => {
       if (a.stepId === undefined || b.stepId === undefined) return 0;
       return a.stepId - b.stepId;
@@ -73,11 +73,11 @@ const getEventsById = async (id: number): Promise<ItemEvent[]> => {
 };
 
 const getRelatedItems = async (id: number): Promise<DigitizedItem[]> => {
-  return fetchGet(`/api/proddb/${id}/children`).then(response => response.json() as Promise<DigitizedItem[]>);
+  return fetchGet(`/${id}/children`).then(response => response.json() as Promise<DigitizedItem[]>);
 };
 
 const getIdentifiersById = async (id: number): Promise<ItemIdentifier[]> => {
-  return fetchGet(`/api/proddb/${id}/identifiers`).then(response => response.json() as Promise<ItemIdentifier[]>);
+  return fetchGet(`/${id}/identifiers`).then(response => response.json() as Promise<ItemIdentifier[]>);
 };
 
 const isSupportedMaterialType = (productionLineId: number): boolean => {
