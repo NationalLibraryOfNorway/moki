@@ -27,7 +27,7 @@ spec:
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
-              path: /moki
+              path: /moki/api/health
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 20
@@ -35,7 +35,7 @@ spec:
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /moki
+              path: /moki/api/health
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 15
