@@ -37,7 +37,7 @@ export const ChildCollapsible = (
 
   return (
     <>
-      <CollapsibleTrigger asChild>
+      <CollapsibleTrigger asChild className="hover:cursor-pointer">
         <TableRow className="hover:bg-muted/50">
           <TableCell className="text-start">{item.searchId}</TableCell>
           <TableCell className="text-start">{item.description}</TableCell>

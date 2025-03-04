@@ -1,6 +1,6 @@
 'use client';
 
-import {JSX, ReactElement, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {getEventsById} from "@/services/production-data";
 import {DigitizedItem} from "@/models/digitized-item";
 import {ItemEvent} from "@/models/item-event";
@@ -8,7 +8,6 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {LuCheck, LuExternalLink, LuHourglass, LuX} from "react-icons/lu";
 import {Tooltip} from "@/components/features/tooltip";
 import {Button} from "@/components/ui/shadcn/button";
-import {IconType} from "react-icons";
 
 interface ProductionStatusDetailsProps {
   selectedObject: DigitizedItem;
@@ -32,14 +31,14 @@ export const ProductionStatusDetails = (props: ProductionStatusDetailsProps) => 
     return date.toISOString().slice(0, 19).replace('T', ' ');
   };
 
-  const statusToIcon = (status: string): JSX.Element | ReactElement<IconType> => {
+  const statusToIcon = (status: string) => {
     switch (status.toLowerCase()) {
     case 'done':
       return <Tooltip trigger={<LuCheck size={24} className="text-blue-500"/> } description={status} />;
     case 'failed':
-      return <LuX size={24} className="text-orange-500" />;
+      return <Tooltip trigger={<LuX size={24} className="text-orange-500" />} description={status} />;
     default:
-      return <LuHourglass size={24} />;
+      return <Tooltip trigger={<LuHourglass size={24} />} description={status} />;
     }
   };
 

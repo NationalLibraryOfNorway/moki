@@ -1,5 +1,5 @@
 import {Table, TableBody, TableCaption, TableHead, TableHeader, TableRow} from "@/components/ui/shadcn/table";
-import {Collapsible, CollapsibleTrigger} from "@/components/ui/shadcn/collapsible";
+import {Collapsible} from "@/components/ui/shadcn/collapsible";
 import {DigitizedItem} from "@/models/digitized-item";
 import {ChildCollapsible} from "@/components/features/child-collapsible";
 
