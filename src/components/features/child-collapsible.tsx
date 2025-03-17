@@ -31,7 +31,7 @@ export const ChildCollapsible = (
       return <span className="font-light">N/A</span>
     } else {
       return itemIsFinished(item) ?
-        <LuThumbsUp size={24} className="text-blue-500"/> : <LuThumbsDown size={24} className="text-orange-500"/>
+        <LuThumbsUp size={24} className="m-auto text-blue-500"/> : <LuThumbsDown size={24} className="m-auto text-orange-500"/>
     }
   }
 
