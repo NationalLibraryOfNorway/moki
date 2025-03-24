@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: moki-deployment
+  name: moki
   labels:
     app: moki
   namespace: tekst-prod
