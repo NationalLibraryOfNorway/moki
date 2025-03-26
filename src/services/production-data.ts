@@ -22,7 +22,9 @@ const searchItem = async (searchQuery: string): Promise<DigitizedItem | undefine
   let httpQuery: Promise<DigitizedItem>;
 
   if (isValidBarcode(searchQuery)) {
-    httpQuery = fetchGet(`/barcode/${searchQuery}`).then(response => response.json() as Promise<DigitizedItem>);
+    httpQuery = fetchGet(`/barcode/${searchQuery}`)
+      .then(response => response.json() as Promise<DigitizedItem[]>)
+      .then(result => result[0]); // Result is returned as an array, but we only expect one item
   } else {
     httpQuery = fetchGet(`/${searchQuery}`).then(response => response.json() as Promise<DigitizedItem>);
   }
